@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+    <main>
+        <h1>Profile</h1>
+        <form id="profileForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required value="<%= user.username %>">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required value="<%= user.email %>">
+            <button type="submit">Update Profile</button>
+        </form>
+        <form id="passwordForm">
+            <label for="currentPassword">Current Password:</label>
+            <input type="password" id="currentPassword" name="currentPassword" required>
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="newPassword" required>
+            <button type="submit">Change Password</button>
+        </form>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="/js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+    <main>
+        <h1>Comments</h1>
+        <form id="commentForm">
+            <div>
+                <label for="comment">Comment:</label>
+                <textarea id="comment" name="comment" required></textarea>
+            </div>
+            <button type="submit" class="btn">Post Comment</button>
+        </form>
+        <ul id="comments"></ul>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="/js/comments.js"></script>
+</body>
+</html>
