@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marked Anime</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/header') %>
-    <main>
-        <h1>Marked Anime</h1>
-        <ul id="markedAnime"></ul>
-    </main>
-    <%- include('partials/footer') %>
-    <script src="/js/markedAnime.js"></script>
+  <%- include('partials/header') %>
+  <main>
+    <h1>Marked Anime</h1>
+    <div class="anime-cards-container">
+      <% if (markedAnime.length > 0) { %>
+        <% markedAnime.forEach(anime => { %>
+          <%- include('partials/animeCard', { anime: anime }) %>
+        <% }) %>
+      <% } else { %>
+        <p>No marked anime.</p>
+      <% } %>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/index.js"></script>
 </body>
 </html>

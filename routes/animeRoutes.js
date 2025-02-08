@@ -8,7 +8,7 @@ const baseURL = "https://api.jikan.moe/v4";
 router.get('/top-anime', async (req, res) => {
   try {
     const response = await axios.get(`${baseURL}/top/anime?filter=bypopularity`);
-    const topAnime = response.data.data.slice(0, 10);
+    const topAnime = response.data.data.slice(0, 20);
     res.json(topAnime);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching top anime data' });
@@ -37,6 +37,7 @@ router.get('/anime/:id', async (req, res) => {
     const response = await axios.get(`${baseURL}/anime/${animeId}`);
     res.json(response.data);
   } catch (error) {
+    console.error('Error fetching anime details:', error);
     res.status(500).json({ message: 'Error fetching anime details' });
   }
 });

@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/header') %>
-    <%- include('partials/navigator') %>
-    <main>
-        <h1>Welcome to Anime Marking Site!</h1>
-        <p>Discover new anime, manage your watchlist, and more.</p>
-    </main>
-    <%- include('partials/footer') %>
+  <%- include('partials/header') %>
+  <main>
+    <h1>Popular Anime</h1>
+    <div class="anime-cards-container">
+      <% animeList.forEach(anime => { %>
+        <%- include('partials/animeCard', { anime: anime }) %>
+      <% }) %>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/index.js"></script>
 </body>
 </html>

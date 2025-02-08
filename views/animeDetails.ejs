@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="anime-details-container">
+    <% if (anime) { %>
+      <div class="anime-details-left">
+        <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-cover">
+        <div class="anime-info">
+          <h1><%= anime.title %></h1>
+          <p>Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
+          <p>Genres: <%= anime.genres.map(genre => genre.name).join(', ') %></p>
+          <p>Status: <%= anime.status %></p>
+          <p>Synopsis: <%= anime.synopsis %></p>
+          <button id="watchlist-btn" data-in-watchlist="<%= isInWatchlist %>">
+            <%= isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist' %>
+          </button>
+          <button id="mark-btn" data-marked="<%= isMarked %>">
+            <%= isMarked ? 'UnMark Anime' : 'Mark Anime' %>
+          </button>
+        </div>
+      </div>
+      <div class="anime-details-right">
+        <h2>Episodes</h2>
+        <div class="episodes">
+          <% for (let i = 1; i <= anime.episodes; i++) { %>
+            <button class="episode-btn <%= i <= lastWatchedEpisode ? 'watched' : '' %>"><%= i %></button>
+          <% } %>
+        </div>
+        <h2>Comments</h2>
+        <div class="comments">
+          <form id="comment-form">
+            <textarea id="comment-text" placeholder="Leave a comment..." required></textarea>
+            <button type="submit">Submit</button>
+          </form>
+          <div id="comments-container">
+            <!-- Comments will be appended here -->
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <p>Anime details not available.</p>
+    <% } %>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/animeDetails.js"></script>
+</body>
+</html>

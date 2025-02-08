@@ -17,10 +17,11 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  // Remove profileImage field if you don't want it
   watchlist: [{ type: String }],
   markedAnime: [{ type: String }],
   ongoingAnime: [ongoingAnimeSchema],
-  comments: [commentSchema] // Add comments field
+  comments: [commentSchema]
 });
 
 const User = mongoose.model('User', userSchema);

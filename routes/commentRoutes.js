@@ -32,11 +32,16 @@ router.get('/comments/:animeId', async (req, res) => {
   const { animeId } = req.params;
 
   try {
-    const users = await User.find({ 'comments.animeId': animeId }, { 'comments.$': 1 });
-    const comments = users.flatMap(user => user.comments);
+    const users = await User.find({ 'comments.animeId': animeId });
+
+    // Flatten the comments array and filter by animeId
+    const comments = users.flatMap(user =>
+      user.comments.filter(comment => comment.animeId === animeId)
+    );
 
     res.json(comments);
   } catch (error) {
+    console.error('Error fetching comments:', error);
     res.status(500).json({ message: 'Error fetching comments' });
   }
 });

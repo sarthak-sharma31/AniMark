@@ -19,12 +19,34 @@ router.post('/ongoingAnime', authMiddleware, async (req, res) => {
     if (existingAnime) {
       existingAnime.lastWatchedEpisode = lastWatchedEpisode;
     } else {
-      user.ongoingAnime.push({ animeId, lastWatchedEpisode }); // Store anime ID and last watched episode
+      user.ongoingAnime.push({ animeId, lastWatchedEpisode }); // Add to ongoing list
+    }
+
+    // Add to marked list
+    if (!user.markedAnime.includes(animeId)) {
+      user.markedAnime.push(animeId);
     }
 
     await user.save();
+
+    // Check if the anime is completed
+    const response = await axios.get(`${baseURL}/anime/${animeId}`);
+    const anime = response.data.data;
+
+    if (lastWatchedEpisode === anime.episodes) {
+      // Remove from ongoing list
+      user.ongoingAnime = user.ongoingAnime.filter(anime => anime.animeId !== animeId);
+
+      // Update marked anime with the last watched episode
+      if (!user.completedAnime) user.completedAnime = [];
+      user.completedAnime.push({ animeId, lastWatchedEpisode });
+
+      await user.save();
+    }
+
     res.json({ message: 'Ongoing anime added/updated successfully' });
   } catch (error) {
+    console.error('Error adding/updating ongoing anime:', error);
     res.status(500).json({ message: 'Error adding/updating ongoing anime' });
   }
 });
@@ -59,6 +81,7 @@ router.get('/ongoingAnime', authMiddleware, async (req, res) => {
 
     res.json(validOngoingAnime); // Filter out any null values
   } catch (error) {
+    console.error('Error fetching ongoing anime:', error);
     res.status(500).json({ message: 'Error fetching ongoing anime' });
   }
 });
@@ -78,6 +101,7 @@ router.delete('/ongoingAnime', authMiddleware, async (req, res) => {
 
     res.json({ message: 'Ongoing anime removed' });
   } catch (error) {
+    console.error('Error removing ongoing anime:', error);
     res.status(500).json({ message: 'Error removing ongoing anime' });
   }
 });

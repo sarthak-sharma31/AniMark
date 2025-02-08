@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ongoing Anime</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/header') %>
-    <main>
-        <h1>Ongoing Anime</h1>
-        <ul id="ongoingAnime"></ul>
-    </main>
-    <%- include('partials/footer') %>
-    <script src="/js/ongoingAnime.js"></script>
+  <%- include('partials/header') %>
+  <main>
+    <h1>Ongoing Anime</h1>
+    <div class="anime-cards-container">
+      <% if (ongoingAnime.length > 0) { %>
+        <% ongoingAnime.forEach(anime => { %>
+          <%- include('partials/animeCard', { anime: anime }) %>
+        <% }) %>
+      <% } else { %>
+        <p>No ongoing anime found.</p>
+      <% } %>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/index.js"></script>
 </body>
 </html>

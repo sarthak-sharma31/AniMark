@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watchlist</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('partials/header') %>
-    <main>
-        <h1>Watchlist</h1>
-        <ul id="watchlist"></ul>
-    </main>
-    <%- include('partials/footer') %>
-    <script src="/js/watchlist.js"></script>
+  <%- include('partials/header') %>
+  <main>
+    <h1>Your Watchlist</h1>
+    <div class="anime-cards-container">
+      <% if (watchlist.length > 0) { %>
+        <% watchlist.forEach(anime => { %>
+          <%- include('partials/animeCard', { anime: anime }) %>
+        <% }) %>
+      <% } else { %>
+        <p>Your watchlist is empty.</p>
+      <% } %>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/index.js"></script>
 </body>
 </html>
