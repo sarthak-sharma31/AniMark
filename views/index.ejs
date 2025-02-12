@@ -9,7 +9,18 @@
 <body>
   <%- include('partials/header') %>
   <main>
-    <h1>Popular Anime</h1>
+    <div class="category-buttons">
+      <button onclick="window.location.href='/category/new'">New</button>
+      <button onclick="window.location.href='/category/top'">Top</button>
+      <button onclick="window.location.href='/category/movies'">Movies</button>
+      <button onclick="window.location.href='/category/ova'">OVA</button>
+      <button onclick="window.location.href='/category/ona'">ONA</button>
+      <button onclick="window.location.href='/category/upcoming'">Upcoming</button>
+      <button onclick="window.location.href='/category/summer'">Summer</button>
+      <button onclick="window.location.href='/category/winter'">Winter</button>
+      <button onclick="window.location.href='/category/spring'">Spring</button>
+    </div>
+    <h1><%= title %></h1>
     <div class="anime-cards-container">
       <% animeList.forEach(anime => { %>
         <%- include('partials/animeCard', { anime: anime }) %>

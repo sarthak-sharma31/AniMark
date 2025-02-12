@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  // Remove profileImage field if you don't want it
+  profileImage: { type: String, default: 'default_image_url' }, // Add profileImage field
   watchlist: [{ type: String }],
   markedAnime: [{ type: String }],
   ongoingAnime: [ongoingAnimeSchema],

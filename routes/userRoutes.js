@@ -2,22 +2,18 @@ import express from 'express';
 import User from '../models/userModel.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  try {
-    const newUser = new User({ username, email, password });
+let dbProfileImage = '/images/anime-characters/zoro.jpg';
 
-    await newUser.save();
-    res.json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).json({ message: 'Error registering user' });
-  }
-});
 
 router.post('/update-username', authMiddleware, async (req, res) => {
   const { username } = req.body;
@@ -66,6 +62,55 @@ router.post('/update-password', authMiddleware, async (req, res) => {
   }
 });
 
+// Route to render the reset password form
+router.get('/reset/:token', (req, res) => {
+  const { token } = req.params;
+  res.render('resetPassword', { token });
+});
+
+// Reset Password Route
+//router.get('/reset/:token', async (req, res) => {
+//  try {
+//    const user = await User.findOne({
+//      resetPasswordToken: req.params.token,
+//      resetPasswordExpires: { $gt: Date.now() }
+//    });
+
+//    if (!user) {
+//      return res.status(400).json({ message: 'Password reset token is invalid or has expired' });
+//    }
+
+//    res.render('resetPassword', { token: req.params.token });
+//  } catch (error) {
+//    console.error('Error finding user with reset token:', error);
+//    res.status(500).json({ message: 'Error finding user with reset token' });
+//  }
+//});
+
+//router.post('/reset/:token', async (req, res) => {
+//  try {
+//    const user = await User.findOne({
+//      resetPasswordToken: req.params.token,
+//      resetPasswordExpires: { $gt: Date.now() }
+//    });
+
+//    if (!user) {
+//      return res.status(400).json({ message: 'Password reset token is invalid or has expired' });
+//    }
+
+//    // Hash new password and update
+//    const salt = await bcrypt.genSalt(10);
+//    user.password = await bcrypt.hash(req.body.password, salt);
+//    user.resetPasswordToken = undefined;
+//    user.resetPasswordExpires = undefined;
+//    await user.save();
+
+//    res.redirect('/login');
+//  } catch (error) {
+//    console.error('Error resetting password:', error);
+//    res.status(500).json({ message: 'Error resetting password' });
+//  }
+//});
 
 // Logout
 router.post('/logout', (req, res, next) => {
@@ -76,6 +121,5 @@ router.post('/logout', (req, res, next) => {
     res.redirect('/');
   });
 });
-
 
 export default router;

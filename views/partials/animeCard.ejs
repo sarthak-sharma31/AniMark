@@ -1,7 +1,7 @@
 <div class="anime-card" data-id="<%= anime.mal_id %>">
 	<img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-image">
 	<div class="anime-details">
-	  <h2 class="anime-title"><%= anime.title %></h2>
+	  <h2 class="anime-title"><%= anime.title_english %></h2>
 	  <p class="anime-rating">Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
 	  <p class="anime-genres">Genres: <%= anime.genres.map(genre => genre.name).join(', ') %></p>
 	  <p class="anime-status">Status: <%= anime.status %></p>

@@ -11,7 +11,7 @@
   <main>
     <h1>Your Profile</h1>
     <div class="profile-container">
-      <img src="default_image_url" alt="Profile Image" class="profile-image">
+      <img src="<%= user.profileImage %>" alt="Profile Image" class="profile-image">
       <p>Username: <%= user.username %></p>
       <p>Email: <%= user.email %></p>
 
@@ -29,6 +29,17 @@
         <label for="new-password">New Password:</label>
         <input type="password" id="new-password" name="newPassword" required>
         <button type="submit">Update Password</button>
+      </form>
+
+      <!-- Change Profile Photo Form -->
+      <form action="/update-profile-photo" method="post">
+        <label for="profileImage">Choose New Profile Image:</label>
+        <select id="profileImage" name="profileImage">
+          <% images.forEach(image => { %>
+            <option value="/images/anime-characters/<%= image %>"><%= image %></option>
+          <% }) %>
+        </select>
+        <button type="submit">Update Profile Photo</button>
       </form>
 
       <!-- Logout Button -->

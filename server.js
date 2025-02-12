@@ -15,6 +15,8 @@ import pageRoutes from "./routes/pageRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import session from "express-session";
 import passport from './config/passportConfig.js';
+import jwtMiddleware from "./middleware/jwtMiddleware.js"; // Import the JWT middleware
+import User from "./models/userModel.js";
 
 dotenv.config();
 
@@ -28,12 +30,7 @@ const __dirname = path.dirname(__filename);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Middleware to pass user data to all templates
-app.use((req, res, next) => {
-  res.locals.user = req.user || null;
-  next();
-});
-
+// Initialize session and passport
 app.use(session({
   secret: process.env.SESSION_SECRET || 'yourSecretKey',
   resave: false,
@@ -42,6 +39,27 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Apply JWT middleware
+app.use(jwtMiddleware);
+
+// Middleware to pass user data and profile image to all templates
+app.use(async (req, res, next) => {
+  res.locals.user = req.user || null;
+
+  if (req.user) {
+    try {
+      const user = await User.findById(req.user.id);
+      res.locals.dbProfileImage = user.profileImage || '/images/anime-characters/default.jpg';
+    } catch (error) {
+      res.locals.dbProfileImage = '/images/anime-characters/default.jpg';
+    }
+  } else {
+    res.locals.dbProfileImage = '/images/anime-characters/default.jpg';
+  }
+  next();
+});
+
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));

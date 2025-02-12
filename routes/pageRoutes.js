@@ -4,11 +4,28 @@ import axios from "axios";
 import User from "../models/userModel.js";
 import NodeCache from 'node-cache';
 import { delay } from '../utils/delay.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const router = express.Router();
 const baseURL = "http://localhost:3000/api/anime";
 const jikanURL = "https://api.jikan.moe/v4/anime";
+const jikanTop = "https://api.jikan.moe/v4/top/anime";
 const animeCache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let dbProfileImage = '/images/anime-characters/zoro.jpg';
+
+// Function to get a random image from the anime character directory
+function getRandomAnimeImage() {
+  const imagesDir = path.join(__dirname, '../public/images/anime-characters');
+  const files = fs.readdirSync(imagesDir);
+  const randomIndex = Math.floor(Math.random() * files.length);
+  return `/images/anime-characters/${files[randomIndex]}`;
+}
 
 router.get('/', async (req, res) => {
   try {
@@ -56,7 +73,7 @@ router.get('/anime/:id', authMiddleware, async (req, res) => {
 
   try {
     const [animeResponse, userResponse] = await Promise.all([
-      axios.get(`https://api.jikan.moe/v4/anime/${animeId}`),
+      axios.get(`${jikanURL}/${animeId}`),
       User.findById(userId)
     ]);
 
@@ -92,12 +109,56 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
-router.get('/register', (req, res) => {
-  res.render('register');
+router.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      profileImage: getRandomAnimeImage() // Assign random anime image
+    });
+
+    await newUser.save();
+    dbProfileImage = newUser.profileImage; // Update global variable
+    res.redirect('/login');
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Error registering user' });
+  }
 });
 
-router.get('/profile', authMiddleware, (req, res) => {
-  res.render('profile', { user: req.user });
+router.get('/profile', authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const user = await User.findById(userId);
+    const imagesDir = path.join(__dirname, '../public/images/anime-characters');
+    const images = fs.readdirSync(imagesDir);
+    res.render('profile', { user, images });
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ message: 'Error fetching profile' });
+  }
+});
+
+router.post('/update-profile-photo', authMiddleware, async (req, res) => {
+  const { profileImage } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    user.profileImage = profileImage;
+    await user.save();
+    dbProfileImage = profileImage; // Update global variable
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Error updating profile photo:', error);
+    res.status(500).json({ message: 'Error updating profile photo' });
+  }
 });
 
 router.get('/watchlist', authMiddleware, async (req, res) => {
@@ -196,8 +257,110 @@ router.get('/ongoingAnime', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/category/movies', async (req, res) => {
+  try {
+    const response = await axios.get(`${jikanTop}?type=movie`);
+    res.render('index', { title: 'Anime Movies', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime movies:', error);
+    res.render('index', { title: 'Anime Movies', animeList: [] });
+  }
+});
+
+router.get('/category/ona', async (req, res) => {
+  try {
+    const response = await axios.get(`${jikanTop}?type=ona`);
+    res.render('index', { title: 'ONA', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime movies:', error);
+    res.render('index', { title: 'ONA', animeList: [] });
+  }
+});
+router.get('/category/new', async (req, res) => {
+  try {
+    const newAnimeURL = "https://api.jikan.moe/v4/seasons/now?sfw";
+    const response = await axios.get(newAnimeURL);
+    res.render('index', { title: 'New Anime', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime movies:', error);
+    res.render('index', { title: 'New Anime', animeList: [] });
+  }
+});
+router.get('/category/ova', async (req, res) => {
+  try {
+    const response = await axios.get(`${jikanTop}?type=ova`);
+    res.render('index', { title: 'OVA', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime movies:', error);
+    res.render('index', { title: 'OVA', animeList: [] });
+  }
+});
+router.get('/category/upcoming', async (req, res) => {
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/seasons/upcoming`);
+    res.render('index', { title: 'Upcoming Anime', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime movies:', error);
+    res.render('index', { title: 'Upcoming Anime', animeList: [] });
+  }
+});
+router.get('/category/top', async (req, res) => {
+  try {
+    const response = await axios.get(`${jikanTop}?sfw`);
+    res.render('index', { title: 'Top Anime', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime movies:', error);
+    res.render('index', { title: 'Top Anime', animeList: [] });
+  }
+});
+router.get('/category/summer', async (req, res) => {
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/seasons/2024/summer?sfw`);
+    res.render('index', { title: 'Summer Anime', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime:', error);
+    res.render('index', { title: 'Summer Anime', animeList: [] });
+  }
+});
+
+router.get('/category/winter', async (req, res) => {
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/seasons/2024/winter?sfw`);
+    res.render('index', { title: 'Winter Anime', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime:', error);
+    res.render('index', { title: 'Winter Anime', animeList: [] });
+  }
+});
+
+
+router.get('/category/spring', async (req, res) => {
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/seasons/2024/spring?sfw`);
+    res.render('index', { title: 'Spring Anime', animeList: response.data.data });
+  } catch (error) {
+    console.error('Error fetching anime:', error);
+    res.render('index', { title: 'Spring Anime', animeList: [] });
+  }
+});
+
+router.get('/forgot-password', (req, res) => {
+  res.render('forgotPassword');
+});
+
 router.get('/comments', authMiddleware, (req, res) => {
   res.render('comments');
 });
 
 export default router;
+
+
+//https://api.jikan.moe/v4/seasons/2024/summer?sfw
+//https://api.jikan.moe/v4/seasons/2014/winter?sfw
+//https://api.jikan.moe/v4/seasons/2009/spring?sfw
+
+//https://api.jikan.moe/v4/top/anime?sfw
+//https://api.jikan.moe/v4/top/anime?type=movie
+//https://api.jikan.moe/v4/top/anime?type=ona
+//https://api.jikan.moe/v4/top/anime?type=ova
+//https://api.jikan.moe/v4/seasons/upcoming
