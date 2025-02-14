@@ -15,9 +15,9 @@ router.post('/register', async (req, res) => {
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ status: 201, message: 'User registered successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error registering user' });
+    res.status(500).json({ status: 500, message: 'Error registering user' });
   }
 });
 
@@ -27,10 +27,10 @@ router.post('/login', async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'User not found' });
+    if (!user) return res.status(400).json({ status: 400, message: 'User not found' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return res.status(400).json({ status: 400, message: 'Invalid credentials' });
 
     // Generate JWT token
     const token = jwt.sign(
@@ -42,9 +42,9 @@ router.post('/login', async (req, res) => {
     // Save token in session
     req.session.token = token;
 
-    res.json({ message: 'Login successful' });
+    res.json({ status: 200, message: 'Login successful' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ status: 500, message: 'Server error' });
   }
 });
 
@@ -52,10 +52,10 @@ router.post('/login', async (req, res) => {
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ message: 'Error logging out' });
+      return res.status(500).json({ status: 500, message: 'Error logging out' });
     }
     res.clearCookie('connect.sid');  // Clear session cookie
-    res.json({ message: 'Logged out successfully' });
+    res.json({ status: 200, message: 'Logged out successfully' });
   });
 });
 
@@ -65,7 +65,7 @@ router.post('/forgot-password', async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ status: 404, message: 'User not found' });
     }
 
     // Generate reset token
@@ -92,11 +92,11 @@ router.post('/forgot-password', async (req, res) => {
     };
     transporter.sendMail(receiver);
 
-    return res.status(200).json({status: 200, message:"Password reset link sent"});
+    return res.status(200).json({ status: 200, message: 'Password reset link sent' });
 
   } catch (error) {
     console.error('Error sending reset email:', error);
-    res.status(500).json({ message: 'Error sending reset email' });
+    res.status(500).json({ status: 500, message: 'Error sending reset email' });
   }
 });
 
@@ -106,7 +106,7 @@ router.post('/resetPassword/:token', async (req, res) => {
     const { password } = req.body;
 
     if (!password) {
-      return res.status(400).json({status:400, message: "Please provide the password" });
+      return res.status(400).json({ status: 400, message: 'Please provide the password' });
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);
@@ -118,9 +118,9 @@ router.post('/resetPassword/:token', async (req, res) => {
     user.password = newHashedPassword;
     await user.save();
 
-    return res.status(200).json({status:200, message: "Password reset successful" });
+    return res.status(200).json({ status: 200, message: 'Password reset successful' });
   } catch (error) {
-    return res.status(500).json({ status: 500, message: "Something went wrong"});
+    return res.status(500).json({ status: 500, message: 'Something went wrong' });
   }
 });
 

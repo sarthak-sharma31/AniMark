@@ -7,6 +7,7 @@ import { delay } from '../utils/delay.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcrypt';
 
 const router = express.Router();
 const baseURL = "http://localhost:3000/api/anime";
@@ -107,6 +108,9 @@ router.get('/anime/:id', authMiddleware, async (req, res) => {
 
 router.get('/login', (req, res) => {
   res.render('login');
+});
+router.get('/register', (req, res) => {
+  res.render('register');
 });
 
 router.post('/register', async (req, res) => {

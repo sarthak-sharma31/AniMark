@@ -462,3 +462,70 @@ header {
     cursor: pointer;
     border-radius: 5px;
   }
+
+
+
+  /*alert*/
+  #alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+
+  .alert {
+    display: none;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .alert-success {
+    border-color: #d4edda;
+    color: #155724;
+    background-color: #d4edda;
+  }
+
+  .alert-danger {
+    border-color: #f8d7da;
+    color: #721c24;
+    background-color: #f8d7da;
+  }
+
+
+
+  /*test*/
+  .message-box {
+    position: fixed;
+    top: 0;
+    right: 50%;
+    transform: translateX(50%);
+    width: auto;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear, transform 0.5s ease-out;
+    z-index: 1000;
+  }
+
+  .message-box.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(50%) translateY(250px);
+  }
+
+  .msg-title {
+    color: orange;
+    font-weight: bold;
+  }
+
+  .msg-info {
+    color: black;
+  }
