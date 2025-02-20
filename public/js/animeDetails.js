@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const watchlistBtn = document.getElementById('watchlist-btn');
 	const markBtn = document.getElementById('mark-btn');
 	const episodeButtons = document.querySelectorAll('.episode-btn');
+	const clearAllEpisodesBtn = document.getElementById('clear-all-episodes-btn');
 
 	// Watchlist Button Click Handler
 	watchlistBtn.addEventListener('click', async () => {
@@ -99,6 +100,37 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	  });
 	});
+
+
+	clearAllEpisodesBtn.addEventListener('click', async () => {
+		try {
+		  const response = await fetch('/api/user/clear-all-episodes', {
+			method: 'DELETE',
+			headers: {
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ animeId })
+		  });
+
+		  const result = await response.json();
+		  showPopUp(result);
+
+		  if (response.ok) {
+			// Update UI to reflect the clearing of all episodes
+			episodeButtons.forEach(btn => {
+			  btn.classList.remove('watched');
+			});
+			markBtn.textContent = 'Mark Anime';
+			markBtn.setAttribute('data-marked', false);
+
+			// Optionally, re-render the page or fetch updated data
+			window.location.reload(); // This reloads the page to reflect changes
+		  }
+		} catch (error) {
+		  console.error('Error clearing all episodes:', error);
+		  showPopUp({ title: 'Error', message: 'Failed to clear all episodes.' });
+		}
+	  });
 
 	// Add Comment
 	document.getElementById('comment-form').addEventListener('submit', async (event) => {

@@ -11,13 +11,7 @@
 </head>
 
 <body>
-  <div id="message-box" class="pop-up">
-    <p>
-      <span class="msg-title">Message</span>
-      :
-      <span class="msg-info">Here is the info</span>
-    </p>
-  </div>
+  <%- include('partials/message') %>
   <%- include('partials/header') %>
     <main class="anime-details-container">
       <% if (anime) { %>
@@ -39,6 +33,7 @@
             <button id="mark-btn" data-marked="<%= isMarked %>">
               <%= isMarked ? 'UnMark Anime' : 'Mark Anime' %>
             </button>
+            <button id="clear-all-episodes-btn">Clear All Episodes</button>
           </div>
         </div>
         <div class="anime-details-right">

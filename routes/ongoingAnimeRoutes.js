@@ -106,4 +106,26 @@ router.delete('/ongoingAnime', authMiddleware, async (req, res) => {
   }
 });
 
+router.delete('/clear-all-episodes', authMiddleware, async (req, res) => {
+  const { animeId } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { ongoingAnime: { animeId } } }, // Remove anime ID from ongoingAnime
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ status: 404, message: 'User not found' });
+    }
+
+    res.status(200).json({ status: 200, message: 'Cleared all episodes and removed from ongoing anime' });
+  } catch (error) {
+    console.error('Error clearing all episodes:', error);
+    res.status(500).json({ status: 500, message: 'Error clearing all episodes' });
+  }
+});
+
 export default router;
