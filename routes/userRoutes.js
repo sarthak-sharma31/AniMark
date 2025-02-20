@@ -17,13 +17,12 @@ router.post('/update-username', authMiddleware, async (req, res) => {
 
   try {
     const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
     user.username = username;
     await user.save();
 
-    // Fetch the updated user data
-    const updatedUser = await User.findById(userId);
-
-    res.render('profile', { user: updatedUser });
+    res.redirect('/profile'); // Redirect to profile page after updating
   } catch (error) {
     console.error('Error updating username:', error);
     res.status(500).json({ message: 'Error updating username' });

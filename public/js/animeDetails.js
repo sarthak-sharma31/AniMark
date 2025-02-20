@@ -122,9 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			});
 			markBtn.textContent = 'Mark Anime';
 			markBtn.setAttribute('data-marked', false);
-
-			// Optionally, re-render the page or fetch updated data
-			window.location.reload(); // This reloads the page to reflect changes
 		  }
 		} catch (error) {
 		  console.error('Error clearing all episodes:', error);
