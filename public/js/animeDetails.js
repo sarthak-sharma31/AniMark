@@ -18,14 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 
 		const result = await response.json();
-		alert(result.message);
+		//alert(result.message);
+		showPopUp(result);
 
 		// Toggle button text and data attribute
 		watchlistBtn.textContent = inWatchlist ? 'Add to Watchlist' : 'Remove from Watchlist';
 		watchlistBtn.setAttribute('data-in-watchlist', !inWatchlist);
 	  } catch (error) {
 		console.error(`Error ${inWatchlist ? 'removing from' : 'adding to'} watchlist:`, error);
-		alert(`Failed to ${inWatchlist ? 'remove from' : 'add to'} watchlist.`);
+		//alert(`Failed to ${inWatchlist ? 'remove from' : 'add to'} watchlist.`);
+		showPopUp({ title: 'Error', message:  `Failed to ${inWatchlist ? 'remove from' : 'add to'} watchlist.`});
 	  }
 	});
 
@@ -43,14 +45,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 
 		const result = await response.json();
-		alert(result.message);
+		//alert(result.message);
+		showPopUp(result);
 
 		// Toggle button text and data attribute
 		markBtn.textContent = isMarked ? 'Mark Anime' : 'UnMark Anime';
 		markBtn.setAttribute('data-marked', !isMarked);
 	  } catch (error) {
 		console.error(`Error ${isMarked ? 'unmarking' : 'marking'} anime:`, error);
-		alert(`Failed to ${isMarked ? 'unmark' : 'mark'} anime.`);
+		//alert(`Failed to ${isMarked ? 'unmark' : 'mark'} anime.`);
+		showPopUp({ title: 'Error', message:  `Failed to ${isMarked ? 'unmark' : 'mark'} anime.`});
 	  }
 	});
 
@@ -69,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		  });
 
 		  const result = await response.json();
-		  alert(result.message);
+		//  alert(result.message);
+		  showPopUp(result);
 
 		  // Update button styles
 		  episodeButtons.forEach(btn => {
@@ -89,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		  }
 		} catch (error) {
 		  console.error('Error marking episode:', error);
-		  alert('Failed to mark episode.');
+		//  alert('Failed to mark episode.');
+		showPopUp({ title: 'Error', message:  `Failed to mark episode.`});
 		}
 	  });
 	});
@@ -110,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		const result = await response.json();
 		alert(result.message);
+		showPopUp(result);
 
 		// Clear the comment form
 		document.getElementById('comment-text').value = '';
@@ -118,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		loadComments();
 	  } catch (error) {
 		console.error('Error adding comment:', error);
-		alert('Failed to add comment.');
+		//alert('Failed to add comment.');
+		showPopUp({ title: 'Error', message:  `Failed to add comment`});
 	  }
 	});
 
@@ -142,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	  } catch (error) {
 		console.error('Error fetching comments:', error);
-		alert('Failed to fetch comments.');
+		//alert('Failed to fetch comments.');
+		showPopUp({ title: 'Error', message:  `Failed to fetch comments.`});
 	  }
 	}
 

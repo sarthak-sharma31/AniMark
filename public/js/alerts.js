@@ -1,27 +1,18 @@
-function showMessage(title, info) {
-  const messageBox = document.getElementById('message-box');
-  const msgTitle = document.getElementById('msg-title');
-  const msgInfo = document.getElementById('msg-info');
+function showPopUp(result) {
 
-  msgTitle.innerText = title;
-  msgInfo.innerText = info;
+	title = result.title || "Message";
+	info = result.message || "Undefined";
+	const messageBox = document.querySelector('.pop-up'); // Update this line
+	const msgTitle = document.querySelector('.msg-title'); // Use querySelector
+	const msgInfo = document.querySelector('.msg-info');
 
-  messageBox.classList.add('show');
 
-  setTimeout(() => {
-    messageBox.classList.remove('show');
-  }, 3000);
-}
+	msgTitle.innerText = title;
+	msgInfo.innerText = info;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const successMessage = "<%= success %>";
-  const errorMessage = "<%= error %>";
+	messageBox.classList.add('show');
 
-  if (successMessage) {
-    showMessage('Success', successMessage);
+	setTimeout(() => {
+	  messageBox.classList.remove('show');
+	}, 3000);
   }
-
-  if (errorMessage) {
-    showMessage('Error', errorMessage);
-  }
-});

@@ -5,14 +5,10 @@ import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let dbProfileImage = '/images/anime-characters/zoro.jpg';
 
 
 router.post('/update-username', authMiddleware, async (req, res) => {

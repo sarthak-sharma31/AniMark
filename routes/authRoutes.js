@@ -48,17 +48,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Logout endpoint
-router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ status: 500, message: 'Error logging out' });
-    }
-    res.clearCookie('connect.sid');  // Clear session cookie
-    res.json({ status: 200, message: 'Logged out successfully' });
-  });
-});
-
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
