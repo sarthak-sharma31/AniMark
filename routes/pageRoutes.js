@@ -30,19 +30,33 @@ function getRandomAnimeImage() {
 
 router.get('/', async (req, res) => {
   try {
-    // Fetch data from your API route
-    const response = await axios.get(`${baseURL}/top-anime`);
-    const popularAnime = response.data;
+    // Fetch data for new anime
+    const newAnimeResponse = await axios.get(`https://api.jikan.moe/v4/seasons/now?sfw`);
+    const newAnime = newAnimeResponse.data.data;
+
+    // Use the first 4 or 5 anime for the slider
+    const sliderData = newAnime.slice(0, 5);
+
+    // Use the rest for new releases
+    const newReleases = newAnime.slice(5);
+
+    // Fetch data for popular anime
+    const popularAnimeResponse = await axios.get(`${jikanTop}`);
+    const popularAnime = popularAnimeResponse.data.data;
 
     res.render('index', {
       title: 'Welcome to Anime Marking Site!',
-      animeList: popularAnime
+      sliderData,
+      newReleases,
+      popularAnime
     });
   } catch (error) {
-    console.error('Error fetching popular anime:', error);
+    console.error('Error fetching data:', error);
     res.render('index', {
       title: 'Welcome to Anime Marking Site!',
-      animeList: []
+      sliderData: [],
+      newReleases: [],
+      popularAnime: []
     });
   }
 });
@@ -284,10 +298,10 @@ router.get('/category/new', async (req, res) => {
   try {
     const newAnimeURL = "https://api.jikan.moe/v4/seasons/now?sfw";
     const response = await axios.get(newAnimeURL);
-    res.render('index', { title: 'New Anime', animeList: response.data.data });
+    res.render('category', { title: 'New Anime', animeList: response.data.data });
   } catch (error) {
     console.error('Error fetching anime movies:', error);
-    res.render('index', { title: 'New Anime', animeList: [] });
+    res.render('category', { title: 'New Anime', animeList: [] });
   }
 });
 router.get('/category/ova', async (req, res) => {
@@ -311,9 +325,9 @@ router.get('/category/upcoming', async (req, res) => {
 router.get('/category/top', async (req, res) => {
   try {
     const response = await axios.get(`${jikanTop}?sfw`);
-    res.render('index', { title: 'Top Anime', animeList: response.data.data });
+    res.render('category', { title: 'Top Anime', animeList: response.data.data });
   } catch (error) {
-    console.error('Error fetching anime movies:', error);
+    console.error('Error fetching Top Anime:', error);
     res.render('index', { title: 'Top Anime', animeList: [] });
   }
 });

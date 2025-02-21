@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="pop-up">
+    <p>
+      <span class="msg-title">Message</span>
+      :
+      <span class="msg-info">Here is the info</span>
+    </p>
+  </div>
+  <%- include('partials/header') %>
+
+  <main>
+    <h1><%= title %></h1>
+    <div class="anime-cards-container">
+      <% animeList.forEach(anime => { %>
+        <%- include('partials/animeCard', { anime: anime }) %>
+      <% }) %>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/category.js"></script>
+</body>
+</html>

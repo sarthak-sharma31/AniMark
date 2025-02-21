@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <div class="pop-up">
     <p>
@@ -15,26 +19,50 @@
     </p>
   </div>
   <%- include('partials/header') %>
-  <main>
-    <div class="category-buttons">
-      <button onclick="window.location.href='/category/new'">New</button>
-      <button onclick="window.location.href='/category/top'">Top</button>
-      <button onclick="window.location.href='/category/movies'">Movies</button>
-      <button onclick="window.location.href='/category/ova'">OVA</button>
-      <button onclick="window.location.href='/category/ona'">ONA</button>
-      <button onclick="window.location.href='/category/upcoming'">Upcoming</button>
-      <button onclick="window.location.href='/category/summer'">Summer</button>
-      <button onclick="window.location.href='/category/winter'">Winter</button>
-      <button onclick="window.location.href='/category/spring'">Spring</button>
+
+    <!-- Slider for New Anime Releases -->
+    <div class="slider-container">
+      <% sliderData.forEach(anime=> { %>
+        <img src="<%= anime.image %>" alt="<%= anime.title %>">
+        <% }) %>
     </div>
-    <h1><%= title %></h1>
-    <div class="anime-cards-container">
-      <% animeList.forEach(anime => { %>
-        <%- include('partials/animeCard', { anime: anime }) %>
-      <% }) %>
-    </div>
-  </main>
-  <%- include('partials/footer') %>
-  <script src="/js/index.js"></script>
+
+    <main>
+      <div class="category-buttons">
+        <button onclick="window.location.href='/category/new'">New</button>
+        <button onclick="window.location.href='/category/top'">Top</button>
+        <button onclick="window.location.href='/category/movies'">Movies</button>
+        <button onclick="window.location.href='/category/ova'">OVA</button>
+        <button onclick="window.location.href='/category/ona'">ONA</button>
+        <button onclick="window.location.href='/category/upcoming'">Upcoming</button>
+        <button onclick="window.location.href='/category/summer'">Summer</button>
+        <button onclick="window.location.href='/category/winter'">Winter</button>
+        <button onclick="window.location.href='/category/spring'">Spring</button>
+      </div>
+
+      <!-- Section for New Releases -->
+      <section class="new-releases">
+        <h2>New Releases <a href="/category/new" class="view-more">View More</a></h2>
+        <div class="anime-list">
+          <% newReleases.forEach(anime=> { %>
+            <%- include('partials/animeCard', { anime: anime }) %>
+              <% }) %>
+        </div>
+      </section>
+
+      <!-- Section for Popular Anime -->
+      <section class="popular-anime">
+        <h2>Popular Anime <a href="/category/top" class="view-more">View More</a></h2>
+        <div class="anime-cards-container">
+          <% popularAnime.forEach(anime=> { %>
+            <%- include('partials/animeCard', { anime: anime }) %>
+              <% }) %>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+      <script src="/js/index.js"></script>
 </body>
+
 </html>
