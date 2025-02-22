@@ -38,13 +38,22 @@
         </div>
         <div class="anime-details-right">
           <h2>Episodes</h2>
-          <div class="episodes">
-            <% for (let i=1; i <=anime.episodes; i++) { %>
-              <button class="episode-btn <%= i <= lastWatchedEpisode ? 'watched' : '' %>">
+
+          <select id="episode-range">
+            <% for (let start = 1; start <= anime.episodes; start += 100) { %>
+              <% let end = Math.min(start + 99, anime.episodes); %>
+              <option value="<%= start %>-<%= end %>"><%= start %>-<%= end %></option>
+            <% } %>
+          </select>
+
+          <div class="episodes" id="episodes-container">
+            <% for (let i = 1; i <= anime.episodes; i++) { %>
+              <button class="episode-btn <%= i <= lastWatchedEpisode ? 'watched' : '' %>" data-episode="<%= i %>">
                 <%= i %>
               </button>
-              <% } %>
+            <% } %>
           </div>
+
           <h2>Comments</h2>
           <div class="comments">
             <form id="comment-form">

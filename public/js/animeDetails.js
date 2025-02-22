@@ -2,8 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
 	const animeId = window.location.pathname.split('/').pop();
 	const watchlistBtn = document.getElementById('watchlist-btn');
 	const markBtn = document.getElementById('mark-btn');
-	const episodeButtons = document.querySelectorAll('.episode-btn');
 	const clearAllEpisodesBtn = document.getElementById('clear-all-episodes-btn');
+	const episodeButtons = document.querySelectorAll('.episode-btn');
+
+	const episodeRangeDropdown = document.getElementById('episode-range');
+  	const episodesContainer = document.getElementById('episodes-container');
+
+	  function filterEpisodes() {
+		const [start, end] = episodeRangeDropdown.value.split('-').map(Number);
+		episodeButtons.forEach(button => {
+		  const episodeNumber = Number(button.getAttribute('data-episode'));
+		  button.style.display = (episodeNumber >= start && episodeNumber <= end) ? 'inline-block' : 'none';
+		});
+	  }
+
+	  episodeRangeDropdown.addEventListener('change', filterEpisodes);
+
+	  // Set initial filter
+	  filterEpisodes();
 
 	// Watchlist Button Click Handler
 	watchlistBtn.addEventListener('click', async () => {
