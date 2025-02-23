@@ -12,66 +12,72 @@
 
 <body>
   <%- include('partials/message') %>
-  <%- include('partials/header') %>
-    <main class="anime-details-container">
-      <% if (anime) { %>
-        <div class="anime-details-left">
-          <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-cover">
-          <div class="anime-info">
-            <h1>
-              <%= anime.title %>
-            </h1>
-            <p>Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
-            <p>Genres: <%= anime.genres.map(genre=> genre.name).join(', ') %></p>
-            <p>Status: <%= anime.status %>
-            </p>
-            <p>Synopsis: <%= anime.synopsis %>
-            </p>
-            <button id="watchlist-btn" data-in-watchlist="<%= isInWatchlist %>">
-              <%= isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist' %>
-            </button>
-            <button id="mark-btn" data-marked="<%= isMarked %>">
-              <%= isMarked ? 'UnMark Anime' : 'Mark Anime' %>
-            </button>
-            <button id="clear-all-episodes-btn">Clear All Episodes</button>
-          </div>
-        </div>
-        <div class="anime-details-right">
-          <h2>Episodes</h2>
-
-          <select id="episode-range">
-            <% for (let start = 1; start <= anime.episodes; start += 100) { %>
-              <% let end = Math.min(start + 99, anime.episodes); %>
-              <option value="<%= start %>-<%= end %>"><%= start %>-<%= end %></option>
-            <% } %>
-          </select>
-
-          <div class="episodes" id="episodes-container">
-            <% for (let i = 1; i <= anime.episodes; i++) { %>
-              <button class="episode-btn <%= i <= lastWatchedEpisode ? 'watched' : '' %>" data-episode="<%= i %>">
-                <%= i %>
+    <%- include('partials/header') %>
+      <main class="anime-details-container">
+        <% if (anime) { %>
+          <div class="anime-details-left">
+            <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-cover">
+            <div class="anime-info">
+              <h1>
+                <%= anime.title %>
+              </h1>
+              <p>Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
+              <p>Genres: <%= anime.genres.map(genre=> genre.name).join(', ') %></p>
+              <p>Status: <%= anime.status %>
+              </p>
+              <p>Synopsis: <%= anime.synopsis %>
+              </p>
+              <button id="watchlist-btn" data-in-watchlist="<%= isInWatchlist %>">
+                <%= isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist' %>
               </button>
-            <% } %>
-          </div>
-
-          <h2>Comments</h2>
-          <div class="comments">
-            <form id="comment-form">
-              <textarea id="comment-text" placeholder="Leave a comment..." required></textarea>
-              <button type="submit">Submit</button>
-            </form>
-            <div id="comments-container">
-              <!-- Comments will be appended here -->
+              <button id="mark-btn" data-marked="<%= isMarked %>">
+                <%= isMarked ? 'UnMark Anime' : 'Mark Anime' %>
+              </button>
+              <button id="clear-all-episodes-btn">Clear All Episodes</button>
             </div>
           </div>
-        </div>
-        <% } else { %>
-          <p>Anime details not available.</p>
-          <% } %>
-    </main>
-    <%- include('partials/footer') %>
-      <script src="/js/alerts.js"></script>
-      <script src="/js/animeDetails.js"></script>
+          <div class="anime-details-right">
+            <h2>Episodes</h2>
+
+            <% if (anime.episodes && anime.episodes> 0) { %>
+              <select id="episode-range">
+                <% for (let start=1; start <=anime.episodes; start +=100) { %>
+                  <% let end=Math.min(start + 99, anime.episodes); %>
+                    <option value="<%= start %>-<%= end %>">
+                      <%= start %>-<%= end %>
+                    </option>
+                    <% } %>
+              </select>
+              <% } else { %>
+                <p>No episode data available.</p>
+                <% } %>
+
+                  <div class="episodes" id="episodes-container">
+                    <% for (let i=1; i <=anime.episodes; i++) { %>
+                      <button class="episode-btn <%= i <= lastWatchedEpisode ? 'watched' : '' %>" data-episode="<%= i %>">
+                        <%= i %>
+                      </button>
+                      <% } %>
+                  </div>
+
+                  <h2>Comments</h2>
+                  <div class="comments">
+                    <form id="comment-form">
+                      <textarea id="comment-text" placeholder="Leave a comment..." required></textarea>
+                      <button type="submit">Submit</button>
+                    </form>
+                    <div id="comments-container">
+                      <!-- Comments will be appended here -->
+                    </div>
+                  </div>
+          </div>
+          <% } else { %>
+            <p>Anime details not available.</p>
+            <% } %>
+      </main>
+      <%- include('partials/footer') %>
+        <script src="/js/alerts.js"></script>
+        <script src="/js/animeDetails.js"></script>
 </body>
 
 </html>
