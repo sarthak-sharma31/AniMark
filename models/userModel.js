@@ -8,7 +8,6 @@ const ongoingAnimeSchema = new mongoose.Schema({
 const commentSchema = new mongoose.Schema({
   animeId: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  username: { type: String, required: true },
   comment: { type: String, required: true },
   date: { type: Date, default: Date.now }
 });

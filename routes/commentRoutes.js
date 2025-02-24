@@ -16,7 +16,7 @@ router.post('/comments', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const newComment = { animeId, userId, username: user.username, comment };
+    const newComment = { animeId, userId, comment };
     user.comments.push(newComment);
     await user.save();
 
@@ -39,7 +39,14 @@ router.get('/comments/:animeId', async (req, res) => {
       user.comments.filter(comment => comment.animeId === animeId)
     );
 
-    res.json(comments);
+    // Map comments to include the latest username from the user
+    const result = comments.map(comment => ({
+      username: users.find(user => user._id.equals(comment.userId)).username,
+      comment: comment.comment,
+      date: comment.date
+    }));
+
+    res.json(result);
   } catch (error) {
     console.error('Error fetching comments:', error);
     res.status(500).json({ message: 'Error fetching comments' });
