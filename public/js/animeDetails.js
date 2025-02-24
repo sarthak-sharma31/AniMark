@@ -177,28 +177,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Load Comments
 	async function loadComments() {
-	  try {
-		const response = await fetch(`/api/comments/${animeId}`);
-		const comments = await response.json();
+		try {
+		  const response = await fetch(`/api/comments/${animeId}`);
+		  const comments = await response.json();
 
-		const commentsContainer = document.getElementById('comments-container');
-		commentsContainer.innerHTML = '';
+		  console.log('Fetched comments:', comments); // Debugging line
 
-		comments.forEach(comment => {
-		  const commentElement = document.createElement('div');
-		  commentElement.classList.add('comment');
-		  commentElement.innerHTML = `
-			<p><strong>${comment.username}</strong> (${new Date(comment.date).toLocaleString()}):</p>
-			<p>${comment.comment}</p>
-		  `;
-		  commentsContainer.appendChild(commentElement);
-		});
-	  } catch (error) {
-		console.error('Error fetching comments:', error);
-		//alert('Failed to fetch comments.');
-		showPopUp({ title: 'Error', message:  `Failed to fetch comments.`});
+		  const commentsContainer = document.getElementById('comments-container');
+		  commentsContainer.innerHTML = '';
+
+		  comments.forEach(comment => {
+			console.log('Comment ID:', comment._id); // Debugging line
+
+			const commentElement = document.createElement('div');
+			commentElement.classList.add('comment');
+			commentElement.innerHTML = `
+			  <p><strong>${comment.username}</strong> (${new Date(comment.date).toLocaleString()}):</p>
+			  <p>${comment.comment}</p>
+			  <button class="delete-comment" data-comment-id="${comment._id}">🗑️</button>
+			`;
+			commentsContainer.appendChild(commentElement);
+		  });
+
+		  document.querySelectorAll('.delete-comment').forEach(button => {
+			button.addEventListener('click', async (event) => {
+			  const commentId = event.target.getAttribute('data-comment-id');
+			  console.log('Deleting comment ID:', commentId); // Debugging line
+			  if (!commentId) {
+				console.error('Error: Comment ID is undefined!');
+				return;
+			  }
+			  await deleteComment(commentId);
+			});
+		  });
+
+		} catch (error) {
+		  console.error('Error fetching comments:', error);
+		  showPopUp({ title: 'Error', message: 'Failed to fetch comments.' });
+		}
 	  }
-	}
+
+	  async function deleteComment(commentId) {
+		try {
+		  console.log('Sending delete request for comment ID:', commentId); // Debugging line
+
+		  const response = await fetch(`/api/comments/${commentId}`, {
+			method: 'DELETE',
+			headers: {
+			  'Content-Type': 'application/json'
+			}
+		  });
+
+		  const result = await response.json();
+		  console.log('Delete response:', result); // Debugging line
+		  showPopUp(result);
+
+		  // Reload comments after deletion
+		  loadComments();
+		} catch (error) {
+		  console.error('Error deleting comment:', error);
+		  showPopUp({ title: 'Error', message: 'Failed to delete comment.' });
+		}
+	  }
 
 	// Load comments on page load
 	loadComments();

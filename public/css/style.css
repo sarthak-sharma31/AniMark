@@ -617,3 +617,25 @@ header {
     float: right;
     margin-right: 10px;
 }
+
+
+/*comment*/
+
+.comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .delete-comment {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .delete-comment:hover {
+    color: darkred;
+  }
