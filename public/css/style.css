@@ -407,10 +407,11 @@ header {
     align-items: center;
 }
 
-.anim-genres{
+.anim-genres {
     display: flex;
 }
-.a-genre{
+
+.a-genre {
     border: 1px solid orange;
     border-radius: 8px;
     color: orange;
@@ -452,7 +453,7 @@ header {
     margin: 0.4em 0em;
     font-weight: bold;
     font-size: medium;
-  }
+}
 
 .anime-image {
     width: 100%;
@@ -668,19 +669,62 @@ header {
     margin-top: 5px;
 }
 
-/* Hide the scrollbar */
-.anime-list::-webkit-scrollbar {
-    display: none;
-}
-
 .anime-list {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    gap: 10px;
+    margin: 0px 0.5rem;
+
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .anime-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+
+
+  .anime-list-container {
+    position: relative;
+    overflow: hidden; /* Hides scrollbar if needed */
+  }
+
+  .scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 10;
+  }
+
+  .scroll-button.left {
+    left: 10px;
+  }
+
+  .scroll-button.right {
+    right: 10px;
+  }
+
+
+/* Hide the scrollbar */
+/*.anime-list::-webkit-scrollbar {
+    display: none;
+}*/
+
+/*.anime-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
     cursor: pointer;
     padding: 10px 0;
-}
+}*/
 
 /* View More Link */
 .view-more {

@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-    <%= title %>
-  </title>
+  <title><%= title %></title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
   <div class="pop-up">
     <p>
-      <span class="msg-title">Message</span>
-      :
+      <span class="msg-title">Message</span>:
       <span class="msg-info">Here is the info</span>
     </p>
   </div>
@@ -22,9 +17,9 @@
 
     <!-- Slider for New Anime Releases -->
     <div class="slider-container">
-      <% sliderData.forEach(anime=> { %>
+      <% sliderData.forEach(anime => { %>
         <img src="<%= anime.image %>" alt="<%= anime.title %>">
-        <% }) %>
+      <% }) %>
     </div>
 
     <main>
@@ -43,26 +38,33 @@
       <!-- Section for New Releases -->
       <section class="new-releases">
         <h2>New Releases <a href="/category/new" class="view-more">View More</a></h2>
-        <div class="anime-list">
-          <% newReleases.forEach(anime=> { %>
-            <%- include('partials/animeCard', { anime: anime }) %>
-              <% }) %>
+        <div class="anime-list-container">
+          <button class="scroll-button left" onclick="scrollLeft('.new-releases .anime-list')">←</button>
+          <div class="anime-list">
+            <% newReleases.forEach(anime => { %>
+              <%- include('partials/animeCard', { anime: anime }) %>
+            <% }) %>
+          </div>
+          <button class="scroll-button right" onclick="scrollRight('.new-releases .anime-list')">→</button>
         </div>
       </section>
 
       <!-- Section for Popular Anime -->
       <section class="popular-anime">
         <h2>Popular Anime <a href="/category/top" class="view-more">View More</a></h2>
-        <div class="anime-cards-container">
-          <% popularAnime.forEach(anime=> { %>
-            <%- include('partials/animeCard', { anime: anime }) %>
-              <% }) %>
+        <div class="anime-list-container">
+          <button class="scroll-button left" onclick="scrollLeft('.popular-anime .anime-list')">←</button>
+          <div class="anime-list">
+            <% popularAnime.forEach(anime => { %>
+              <%- include('partials/animeCard', { anime: anime }) %>
+            <% }) %>
+          </div>
+          <button class="scroll-button right" onclick="scrollRight('.popular-anime .anime-list')">→</button>
         </div>
       </section>
     </main>
 
     <%- include('partials/footer') %>
-      <script src="/js/index.js"></script>
+    <script src="/js/index.js"></script>
 </body>
-
 </html>
