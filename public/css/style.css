@@ -386,6 +386,7 @@ header {
     width: 20rem;
     height: 13rem;
     padding: 0.5rem;
+    cursor: pointer;
 }
 
 .anim-img {
