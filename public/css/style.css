@@ -377,6 +377,83 @@ header {
     transform: scale(1.05);
 }
 
+.a-card {
+    border: 1px solid #b9b7b7;
+    background-color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    width: 20rem;
+    height: 13rem;
+    padding: 0.5rem;
+}
+
+.anim-img {
+    border-radius: 8px;
+}
+
+.anim-details {
+    display: flex;
+    flex-direction: column;
+    padding: 0.1rem 0.5rem;
+}
+
+.a-status {
+    border: 1px solid orange;
+    border-radius: 8px;
+    color: orange;
+    padding: 0.3em 0.75em;
+    text-align: center;
+    align-items: center;
+}
+
+.anim-genres{
+    display: flex;
+}
+.a-genre{
+    border: 1px solid orange;
+    border-radius: 8px;
+    color: orange;
+    text-align: center;
+    align-items: center;
+    font-size: small;
+    padding: 0.2em 0.3em;
+    margin: 0.25em;
+}
+
+.anim-rating {
+    display: flex;
+    flex-direction: row;
+    margin: 0.2em;
+    justify-content: space-around;
+}
+
+.tot-episodes {
+    margin: 0.5em 0px;
+    font-size: small;
+}
+
+.sma-txt {
+    margin: 0px;
+    font-size: small;
+}
+
+.anim-genres {
+    overflow: hidden;
+}
+
+.anim-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    margin: 0.4em 0em;
+    font-weight: bold;
+    font-size: medium;
+  }
+
 .anime-image {
     width: 100%;
     height: 350px;
@@ -575,13 +652,6 @@ header {
     object-fit: cover;
 }
 
-/* New Releases and Popular Anime Sections */
-.anime-list {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 0;
-}
-
 .anime-item {
     min-width: 200px;
     margin-right: 10px;
@@ -609,6 +679,7 @@ header {
     gap: 1rem;
     justify-content: center;
     cursor: pointer;
+    padding: 10px 0;
 }
 
 /* View More Link */
@@ -627,15 +698,16 @@ header {
     align-items: center;
     padding: 8px;
     border-bottom: 1px solid #ccc;
-  }
+}
 
-  .delete-comment {
+.delete-comment {
     background: none;
     border: none;
     color: red;
     cursor: pointer;
     font-size: 16px;
-  }
-  .delete-comment:hover {
+}
+
+.delete-comment:hover {
     color: darkred;
-  }
+}
