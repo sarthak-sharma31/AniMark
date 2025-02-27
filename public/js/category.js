@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.a-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const animeId = card.dataset.id;
+          window.location.href = `/anime/${animeId}`;
+        });
+      });
     let currentPage = 1;
     let isLoading = false; // Prevent multiple requests at the same time
     const animeCardsContainer = document.querySelector('.anime-cards-container');

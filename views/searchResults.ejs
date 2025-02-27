@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results for "<%= query %>"</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <%- include('partials/header') %>
-  <main>
-    <h1>Search Results for "<%= query %>"</h1>
-    <div class="anime-cards-container">
-      <% if (searchResults.length > 0) { %>
-        <% searchResults.forEach(anime => { %>
-          <div class="anime-card" data-id="<%= anime.mal_id %>">
-            <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-image">
-            <div class="anime-details">
-              <h2 class="anime-title"><%= anime.title %></h2>
-              <p class="anime-rating">Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
-              <p class="anime-genres">Genres: <%= anime.genres.map(genre => genre.name).join(', ') %></p>
-              <p class="anime-status">Status: <%= anime.status %></p>
-            </div>
-          </div>
-        <% }) %>
-      <% } else { %>
-        <p>No results found for "<%= query %>".</p>
-      <% } %>
-    </div>
-  </main>
-  <%- include('partials/footer') %>
-  <script src="/js/index.js"></script>
+    <main>
+      <h1>Search Results for "<%= query %>"</h1>
+      <div class="anime-cards-container">
+        <% if (searchResults.length> 0) { %>
+          <% searchResults.forEach(anime=> { %>
+            <%- include('partials/animeCard', { anime: anime }) %>
+              <% }) %>
+                <% } else { %>
+                  <p>No results found for "<%= query %>".</p>
+                  <% } %>
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+      <script src="/js/index.js"></script>
 </body>
+
 </html>

@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <div class="pop-up">
     <p>
@@ -14,26 +18,36 @@
     </p>
   </div>
   <%- include('partials/header') %>
-
-    <!-- Slider for New Anime Releases -->
-    <div class="slider-container">
-      <% sliderData.forEach(anime => { %>
-        <img src="<%= anime.image %>" alt="<%= anime.title %>">
-      <% }) %>
+    <div class="category-buttons">
+      <button onclick="window.location.href='/category/new'">New</button>
+      <button onclick="window.location.href='/category/top'">Top</button>
+      <button onclick="window.location.href='/category/movies'">Movies</button>
+      <button onclick="window.location.href='/category/ova'">OVA</button>
+      <button onclick="window.location.href='/category/ona'">ONA</button>
+      <button onclick="window.location.href='/category/upcoming'">Upcoming</button>
+      <button onclick="window.location.href='/category/summer'">Summer</button>
+      <button onclick="window.location.href='/category/winter'">Winter</button>
+      <button onclick="window.location.href='/category/spring'">Spring</button>
     </div>
 
-    <main>
-      <div class="category-buttons">
-        <button onclick="window.location.href='/category/new'">New</button>
-        <button onclick="window.location.href='/category/top'">Top</button>
-        <button onclick="window.location.href='/category/movies'">Movies</button>
-        <button onclick="window.location.href='/category/ova'">OVA</button>
-        <button onclick="window.location.href='/category/ona'">ONA</button>
-        <button onclick="window.location.href='/category/upcoming'">Upcoming</button>
-        <button onclick="window.location.href='/category/summer'">Summer</button>
-        <button onclick="window.location.href='/category/winter'">Winter</button>
-        <button onclick="window.location.href='/category/spring'">Spring</button>
+    <!-- Slider for New Anime Releases -->
+    <div class="slider-wrapper">
+      <button class="slider-btn left" onclick="prevSlide()">&#10094;</button>
+      <div class="slider">
+        <% sliderData.forEach(anime=> { %>
+          <div class="slide">
+            <img src="<%= anime.trailer.images.maximum_image_url %>" alt="<%= anime.title_english %>" class="anime-image-here">
+            <div class="slide-title">
+              <%= anime.title_english %>
+            </div>
+          </div>
+          <% }) %>
       </div>
+      <button class="slider-btn right" onclick="nextSlide()">&#10095;</button>
+    </div>
+
+
+    <main>
 
       <!-- Section for New Releases -->
       <section class="new-releases">
@@ -41,9 +55,9 @@
         <div class="anime-list-container">
           <button class="scroll-button left" onclick="scrollLeft('.new-releases .anime-list')">←</button>
           <div class="anime-list">
-            <% newReleases.forEach(anime => { %>
+            <% newReleases.forEach(anime=> { %>
               <%- include('partials/animeCard', { anime: anime }) %>
-            <% }) %>
+                <% }) %>
           </div>
           <button class="scroll-button right" onclick="scrollRight('.new-releases .anime-list')">→</button>
         </div>
@@ -55,9 +69,9 @@
         <div class="anime-list-container">
           <button class="scroll-button left" onclick="scrollLeft('.popular-anime .anime-list')">←</button>
           <div class="anime-list">
-            <% popularAnime.forEach(anime => { %>
+            <% popularAnime.forEach(anime=> { %>
               <%- include('partials/animeCard', { anime: anime }) %>
-            <% }) %>
+                <% }) %>
           </div>
           <button class="scroll-button right" onclick="scrollRight('.popular-anime .anime-list')">→</button>
         </div>
@@ -65,6 +79,7 @@
     </main>
 
     <%- include('partials/footer') %>
-    <script src="/js/index.js"></script>
+      <script src="/js/index.js"></script>
 </body>
+
 </html>

@@ -16,10 +16,10 @@
       <main class="anime-details-container">
         <% if (anime) { %>
           <div class="anime-details-left">
-            <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-cover">
+            <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title_english %>" class="anime-cover">
             <div class="anime-info">
               <h1>
-                <%= anime.title %>
+                <%= anime.title_english %>
               </h1>
               <p>Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
               <p>Genres: <%= anime.genres.map(genre=> genre.name).join(', ') %></p>
