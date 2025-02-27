@@ -28,6 +28,27 @@ function getRandomAnimeImage() {
   return `/images/anime-characters/${files[randomIndex]}`;
 }
 
+router.get('/category/new', async (req, res) => {
+    try {
+        let page = parseInt(req.query.page) || 1;
+
+        await delay(2000); // Add a 2-second delay before making the API call
+
+        const response = await axios.get(`https://api.jikan.moe/v4/seasons/now?page=${page}&sfw`);
+        let paginatedAnime = response.data.data;
+
+        if (req.query.page) {
+            return res.render('partials/animeCardList', { animeList: paginatedAnime });
+        }
+
+        res.render('category', { title: 'New Anime', animeList: paginatedAnime });
+    } catch (error) {
+        console.error("Error fetching paginated anime:", error);
+        res.status(500).send("Server Error");
+    }
+});
+
+
 router.get('/', async (req, res) => {
   try {
     // Fetch data for new anime
@@ -256,7 +277,7 @@ router.get('/ongoingAnime', authMiddleware, async (req, res) => {
       try {
         const response = await axios.get(`https://api.jikan.moe/v4/anime/${anime.animeId}`);
         ongoingAnimeDetails.push(response.data.data);
-        await delay(500); // Add a 500-millisecond delay between requests
+        await delay(200); // Add a 200-millisecond delay between requests
       } catch (error) {
         console.error(`Error fetching details for anime ID ${anime.animeId}:`, error);
       }
@@ -294,16 +315,17 @@ router.get('/category/ona', async (req, res) => {
     res.render('index', { title: 'ONA', animeList: [] });
   }
 });
-router.get('/category/new', async (req, res) => {
-  try {
-    const newAnimeURL = "https://api.jikan.moe/v4/seasons/now?sfw";
-    const response = await axios.get(newAnimeURL);
-    res.render('category', { title: 'New Anime', animeList: response.data.data });
-  } catch (error) {
-    console.error('Error fetching anime movies:', error);
-    res.render('category', { title: 'New Anime', animeList: [] });
-  }
-});
+//router.get('/category/new', async (req, res) => {
+//  try {
+//    const newAnimeURL = "https://api.jikan.moe/v4/seasons/now?sfw";
+//    const response = await axios.get(newAnimeURL);
+//    res.render('category', { title: 'New Anime', animeList: response.data.data });
+//  } catch (error) {
+//    console.error('Error fetching anime movies:', error);
+//    res.render('category', { title: 'New Anime', animeList: [] });
+//  }
+//});
+
 router.get('/category/ova', async (req, res) => {
   try {
     const response = await axios.get(`${jikanTop}?type=ova`);

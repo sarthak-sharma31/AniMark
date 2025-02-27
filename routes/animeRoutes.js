@@ -64,15 +64,4 @@ router.get('/search/anime/genre/:genre', async (req, res) => {
   }
 });
 
-router.get('/new-anime', async (req, res) => {
-  try {
-    const response = await axios.get(`${baseURL}/season`);
-    const newAnime = response.data.data;
-    res.json(newAnime);
-  } catch (error) {
-    console.error('Error fetching new anime:', error);
-    res.status(500).json({ message: 'Error fetching new anime' });
-  }
-});
-
 export default router;

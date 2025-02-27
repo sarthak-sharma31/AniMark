@@ -391,6 +391,8 @@ header {
 
 .anim-img {
     border-radius: 8px;
+    width: 10em;
+    height: 13em;
 }
 
 .anim-details {
