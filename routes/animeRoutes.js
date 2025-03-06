@@ -64,4 +64,16 @@ router.get('/search/anime/genre/:genre', async (req, res) => {
   }
 });
 
+router.get('/anime/:id/episodes', async (req, res) => {
+  const animeId = req.params.id;
+
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}/videos/episodes`);
+    res.json(response.data.data);
+  } catch (error) {
+    console.error('Error fetching anime episodes:', error);
+    res.status(500).json({ message: 'Error fetching anime episodes' });
+  }
+});
+
 export default router;

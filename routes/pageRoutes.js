@@ -28,6 +28,18 @@ function getRandomAnimeImage() {
   return `/images/anime-characters/${files[randomIndex]}`;
 }
 
+router.get('/anime/:id/episodes', async (req, res) => {
+  const animeId = req.params.id;
+
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}/videos/episodes`);
+    res.json(response.data.data);
+  } catch (error) {
+    console.error('Error fetching anime episodes:', error);
+    res.status(500).json({ message: 'Error fetching anime episodes' });
+  }
+});
+
 router.get('/category/new', async (req, res) => {
     try {
         let page = parseInt(req.query.page) || 1;
@@ -232,38 +244,6 @@ router.get('/watchlist', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/markedAnime', authMiddleware, async (req, res) => {
-  const userId = req.user.id;
-
-  try {
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    const markedAnimeDetails = await Promise.all(
-      user.markedAnime.map(async (animeId) => {
-        try {
-          const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
-          return response.data.data;
-        } catch (error) {
-          console.error(`Error fetching details for anime ID ${animeId}:`, error);
-          return null;
-        }
-      })
-    );
-
-    res.render('markedAnime', {
-      title: 'Marked Anime',
-      markedAnime: markedAnimeDetails.filter(anime => anime !== null) // Filter out any null values
-    });
-  } catch (error) {
-    console.error('Error fetching marked anime:', error);
-    res.render('markedAnime', {
-      title: 'Marked Anime',
-      markedAnime: [] // Pass empty array if there's an error
-    });
-  }
-});
-
 router.get('/ongoingAnime', authMiddleware, async (req, res) => {
   const userId = req.user.id;
 
@@ -296,6 +276,40 @@ router.get('/ongoingAnime', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/markedAnime', authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    let markedAnimeDetails = [];
+
+    for (const animeId of user.markedAnime) {
+      try {
+        const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+        markedAnimeDetails.push(response.data.data);
+        await delay(1000); // Add 1-second delay between each request
+      } catch (error) {
+        console.error(`Error fetching details for anime ID ${animeId}:`, error);
+      }
+    }
+
+    res.render('markedAnime', {
+      title: 'Marked Anime',
+      markedAnime: markedAnimeDetails
+    });
+
+  } catch (error) {
+    console.error('Error fetching marked anime:', error);
+    res.render('markedAnime', {
+      title: 'Marked Anime',
+      markedAnime: []
+    });
+  }
+});
+
+
 router.get('/category/movies', async (req, res) => {
   try {
     const response = await axios.get(`${jikanTop}?type=movie`);
@@ -315,16 +329,6 @@ router.get('/category/ona', async (req, res) => {
     res.render('index', { title: 'ONA', animeList: [] });
   }
 });
-//router.get('/category/new', async (req, res) => {
-//  try {
-//    const newAnimeURL = "https://api.jikan.moe/v4/seasons/now?sfw";
-//    const response = await axios.get(newAnimeURL);
-//    res.render('category', { title: 'New Anime', animeList: response.data.data });
-//  } catch (error) {
-//    console.error('Error fetching anime movies:', error);
-//    res.render('category', { title: 'New Anime', animeList: [] });
-//  }
-//});
 
 router.get('/category/ova', async (req, res) => {
   try {
