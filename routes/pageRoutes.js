@@ -40,6 +40,27 @@ router.get('/anime/:id/episodes', async (req, res) => {
   }
 });
 
+router.get('/animeCard/:id', async (req, res) => {
+    try {
+        const animeId = req.params.id;
+        const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+        const anime = response.data.data;
+
+        // Render the anime card partial and send the HTML
+        res.render('partials/animeCard', { anime }, (err, html) => {
+            if (err) {
+                console.error('Error rendering anime card:', err);
+                return res.status(500).send('');
+            }
+            res.send(html);
+        });
+    } catch (error) {
+        console.error(`Error fetching anime ID ${req.params.id}:`, error);
+        res.status(500).send('');
+    }
+});
+
+
 router.get('/category/new', async (req, res) => {
     try {
         let page = parseInt(req.query.page) || 1;
@@ -278,36 +299,80 @@ router.get('/ongoingAnime', authMiddleware, async (req, res) => {
 
 router.get('/markedAnime', authMiddleware, async (req, res) => {
   const userId = req.user.id;
-
   try {
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+      const user = await User.findById(userId);
 
-    let markedAnimeDetails = [];
-
-    for (const animeId of user.markedAnime) {
-      try {
-        const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
-        markedAnimeDetails.push(response.data.data);
-        await delay(1000); // Add 1-second delay between each request
-      } catch (error) {
-        console.error(`Error fetching details for anime ID ${animeId}:`, error);
+      if (!user || !user.markedAnime || user.markedAnime.length === 0) {
+          return res.render('markedAnime', { title: "Marked Anime", animeList: [], markedAnimeIds: [] });
       }
-    }
 
-    res.render('markedAnime', {
-      title: 'Marked Anime',
-      markedAnime: markedAnimeDetails
-    });
+      const markedAnimeIds = user.markedAnime;
+      const animeList = [];
+
+      // Fetch the first 3 anime immediately
+      for (const id of markedAnimeIds.slice(0, 3)) {
+          try {
+              const response = await axios.get(`https://api.jikan.moe/v4/anime/${id}`);
+              animeList.push(response.data.data);
+          } catch (fetchError) {
+              console.error(`Error fetching anime ${id}:`, fetchError);
+          }
+      }
+
+      res.render('markedAnime', { title: "Marked Anime", animeList, markedAnimeIds });
 
   } catch (error) {
-    console.error('Error fetching marked anime:', error);
-    res.render('markedAnime', {
-      title: 'Marked Anime',
-      markedAnime: []
-    });
+      console.error('Error fetching marked anime:', error);
+      res.render('markedAnime', { title: "Marked Anime", animeList: [], markedAnimeIds: [] });
   }
 });
+
+
+
+
+router.get('/fetchAnime', async (req, res) => {
+  const animeId = req.query.id;
+
+  try {
+      const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+      const anime = response.data.data;
+
+      res.render('partials/animeCard', { anime }, (err, html) => {
+          if (err) {
+              console.error("Error rendering animeCard:", err);
+              return res.status(500).send("Error loading anime");
+          }
+          res.send(html);
+      });
+
+  } catch (error) {
+      console.error(`Error fetching anime ${animeId}:`, error);
+      res.status(500).send("Failed to load anime");
+  }
+});
+
+
+router.get('/markedAnime/loadMore', async (req, res) => {
+    try {
+        const animeId = req.query.id;
+        console.log(`Fetching details for anime ID: ${animeId}`);
+
+        if (!animeId) {
+            console.error("No anime ID provided");
+            return res.status(400).send("No anime ID provided");
+        }
+
+        const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+        const anime = response.data.data;
+
+        res.render('partials/animeCardList', { animeList: [anime] });
+
+    } catch (error) {
+        console.error('Error fetching more anime:', error);
+        res.status(500).send("Server Error");
+    }
+});
+
 
 
 router.get('/category/movies', async (req, res) => {
