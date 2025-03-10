@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const animeContainer = document.querySelector('.anime-cards-container');
     const animeIdsElement = document.getElementById('animeIds');
 
+    document.querySelectorAll('.a-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const animeId = card.dataset.id;
+          window.location.href = `/anime/${animeId}`;
+        });
+      });
+
     if (!animeContainer || !animeIdsElement) return; // Exit if not found
 
     const animeIds = JSON.parse(animeIdsElement.dataset.ids);
