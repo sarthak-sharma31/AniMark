@@ -8,19 +8,17 @@
 </head>
 <body>
   <%- include('partials/header') %>
+
   <main>
     <h1>Ongoing Anime</h1>
     <div class="anime-cards-container">
-      <% if (ongoingAnime.length > 0) { %>
-        <% ongoingAnime.forEach(anime => { %>
-          <%- include('partials/animeCard', { anime: anime }) %>
-        <% }) %>
-      <% } else { %>
-        <p>No ongoing anime found.</p>
-      <% } %>
+       <% animeList.forEach(anime => { %>
+        <%- include('partials/animeCard', { anime: anime }) %>
+      <% }) %>
     </div>
+    <div id="ongoingAnimeIds" data-ids='<%= JSON.stringify(ongoingAnimeIds) %>'></div>
   </main>
   <%- include('partials/footer') %>
-  <script src="/js/index.js"></script>
+  <script src="/js/ongoingAnime.js"></script>
 </body>
 </html>
