@@ -359,13 +359,30 @@ router.get('/fetchAnime', async (req, res) => {
 
 
 router.get('/category/movies', async (req, res) => {
+  //try {
+  //  const response = await axios.get(`${jikanTop}?type=movie`);
+  //  res.render('index', { title: 'Anime Movies', animeList: response.data.data });
+  //} catch (error) {
+  //  console.error('Error fetching anime movies:', error);
+  //  res.render('index', { title: 'Anime Movies', animeList: [] });
+  //}
+
   try {
+
+    await delay(2000); // Add a 2-second delay before making the API call
+
     const response = await axios.get(`${jikanTop}?type=movie`);
-    res.render('index', { title: 'Anime Movies', animeList: response.data.data });
-  } catch (error) {
-    console.error('Error fetching anime movies:', error);
-    res.render('index', { title: 'Anime Movies', animeList: [] });
-  }
+    let paginatedAnime = response.data.data;
+
+    if (req.query.page) {
+        return res.render('partials/animeCardList', { animeList: paginatedAnime });
+    }
+
+    res.render('category', { title: 'Movies', animeList: paginatedAnime });
+} catch (error) {
+    console.error("Error fetching paginated anime:", error);
+    res.status(500).send("Server Error");
+}
 });
 
 router.get('/category/ona', async (req, res) => {

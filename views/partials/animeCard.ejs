@@ -12,7 +12,11 @@
 						<% } %>
 		</p>
 		<p class="anim-title">
-			<%= anime.title_english %>
+			<% if (anime.title_english != null) {%>
+				<%= anime.title_english %>
+			<%}else{%>
+				<%= anime.title %>
+			<%}%>
 		</p>
 		<% if (anime.scored_by> 0) { %>
 			<div class="anim-rating">
