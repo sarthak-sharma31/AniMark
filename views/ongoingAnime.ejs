@@ -16,9 +16,9 @@
         <%- include('partials/animeCard', { anime: anime }) %>
       <% }) %>
     </div>
-    <div id="ongoingAnimeIds" data-ids='<%= JSON.stringify(ongoingAnimeIds) %>'></div>
+    <div id="animeIds" data-ids='<%= JSON.stringify(ongoingAnimeIds) %>'></div>
   </main>
   <%- include('partials/footer') %>
-  <script src="/js/ongoingAnime.js"></script>
+  <script src="/js/lazyLoadAnime.js"></script>
 </body>
 </html>

@@ -17,12 +17,12 @@
       <% }) %>
     </div>
     <!-- Hidden div to store anime IDs for JS -->
-    <div id="markedAnimeIds" data-ids="<%= JSON.stringify(markedAnimeIds) %>"></div>
+    <div id="animeIds" data-ids="<%= JSON.stringify(markedAnimeIds) %>"></div>
   </main>
 
   <%- include('partials/footer') %>
 
-  <script src="/js/markedAnime.js"></script>
+  <script src="/js/lazyLoadAnime.js"></script>
 </body>
 
 </html>

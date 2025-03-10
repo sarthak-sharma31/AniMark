@@ -235,33 +235,34 @@ router.post('/update-profile-photo', authMiddleware, async (req, res) => {
 
 router.get('/watchlist', authMiddleware, async (req, res) => {
   const userId = req.user.id;
-
   try {
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+      const user = await User.findById(userId);
 
-    const watchlistDetails = await Promise.all(
-      user.watchlist.map(async (animeId) => {
-        try {
-          const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
-          return response.data.data;
-        } catch (error) {
-          console.error(`Error fetching details for anime ID ${animeId}:`, error);
-          return null;
-        }
-      })
-    );
+      if (!user || !user.watchlist || user.watchlist.length === 0) {
+          return res.render('watchlist', { title: "Watchlist", animeList: [], watchlistIds: [] });
+      }
 
-    res.render('watchlist', {
-      title: 'Your Watchlist',
-      watchlist: watchlistDetails.filter(anime => anime !== null) // Filter out any null values
-    });
+      // Watchlist anime IDs are stored directly in an array
+      const watchlistIds = user.watchlist;
+      const animeList = [];
+
+      // Fetch the first 3 anime immediately
+      for (const id of watchlistIds.slice(0, 3)) {
+          try {
+              const response = await axios.get(`https://api.jikan.moe/v4/anime/${id}`);
+              animeList.push(response.data.data);
+          } catch (fetchError) {
+              if (!(fetchError.response && fetchError.response.status === 404)) {
+                  console.error(`Error fetching anime ${id}:`, fetchError);
+              }
+          }
+      }
+
+      res.render('watchlist', { title: "Watchlist", animeList, watchlistIds });
+
   } catch (error) {
-    console.error('Error fetching watchlist:', error);
-    res.render('watchlist', {
-      title: 'Your Watchlist',
-      watchlist: [] // Pass empty array if there's an error
-    });
+      console.error('Error fetching watchlist:', error);
+      res.render('watchlist', { title: "Watchlist", animeList: [], watchlistIds: [] });
   }
 });
 

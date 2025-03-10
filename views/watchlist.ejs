@@ -8,19 +8,17 @@
 </head>
 <body>
   <%- include('partials/header') %>
+
   <main>
-    <h1>Your Watchlist</h1>
+    <h1>Watchlist</h1>
     <div class="anime-cards-container">
-      <% if (watchlist.length > 0) { %>
-        <% watchlist.forEach(anime => { %>
-          <%- include('partials/animeCard', { anime: anime }) %>
-        <% }) %>
-      <% } else { %>
-        <p>Your watchlist is empty.</p>
-      <% } %>
+       <% animeList.forEach(anime => { %>
+        <%- include('partials/animeCard', { anime: anime }) %>
+      <% }) %>
     </div>
+    <div id="animeIds" data-ids='<%= JSON.stringify(watchlistIds) %>'></div>
   </main>
   <%- include('partials/footer') %>
-  <script src="/js/index.js"></script>
+  <script src="/js/lazyLoadAnime.js"></script>
 </body>
 </html>
