@@ -1,0 +1,13 @@
+<div class="anime-card">
+	<a href="<%= anime.url %>">
+	  <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title %>" class="anime-card-img">
+	</a>
+	<div class="anime-card-details">
+	  <div class="a-status">Recommended</div> <!-- "Recommended" since we don't have status -->
+	  <p class="tot-episodes">Votes: <%= anime.votes %></p> <!-- Display votes as a substitute for episode count -->
+	  <p class="anim-title"><a href="<%= anime.url %>" class="anim-title-link"><%= anime.title %></a></p>
+	  <div class="anim-genres">
+		<p class="sma-txt">Explore for more details</p> <!-- Placeholder since genres are not provided -->
+	  </div>
+	</div>
+  </div>

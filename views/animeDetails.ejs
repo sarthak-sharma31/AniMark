@@ -5,7 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
-    <%= anime.title_english %>
+    <% if (anime.title_english !=null) {%>
+      <%= anime.title_english %>
+        <%}else{%>
+          <%= anime.title %>
+            <%}%>
   </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -75,6 +79,27 @@
             <p>Anime details not available.</p>
             <% } %>
       </main>
+      <div class="related-anime">
+        <h2>Related Anime</h2>
+        <% if (relatedAnime.length > 0) { %>
+          <div class="related-anime-container">
+            <% relatedAnime.forEach(anime => { %>
+              <div class="related-anime-card">
+                <a href="/anime/<%= anime.id %>">
+                  <img src="<%= anime.image %>" alt="<%= anime.title_english %>" class="related-anime-img">
+                </a>
+                <div class="related-anime-info">
+                  <a href="/anime/<%= anime.id %>" class="related-anime-title"><%= anime.title %></a>
+                  <p>Votes: <%= anime.votes %></p>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p>No related anime found.</p>
+        <% } %>
+      </div>
+
       <%- include('partials/footer') %>
         <script src="/js/alerts.js"></script>
         <script src="/js/animeDetails.js"></script>

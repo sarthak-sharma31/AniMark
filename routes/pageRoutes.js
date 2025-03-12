@@ -141,9 +141,11 @@ router.get('/anime/:id', authMiddleware, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [animeResponse, userResponse] = await Promise.all([
+    // Fetch anime details, user data, and related anime in parallel
+    const [animeResponse, userResponse, relatedAnimeResponse] = await Promise.all([
       axios.get(`${jikanURL}/${animeId}`),
-      User.findById(userId)
+      User.findById(userId),
+      axios.get(`https://api.jikan.moe/v4/anime/${animeId}/recommendations`)
     ]);
 
     const anime = animeResponse.data;
@@ -151,16 +153,33 @@ router.get('/anime/:id', authMiddleware, async (req, res) => {
     const isMarked = userResponse.markedAnime.includes(animeId);
 
     // Ensure ongoingAnime and completedAnime fields are defined
-    const ongoingAnime = userResponse.ongoingAnime ? userResponse.ongoingAnime.find(anime => anime.animeId === animeId) : null;
-    const completedAnime = userResponse.completedAnime ? userResponse.completedAnime.find(anime => anime.animeId === animeId) : null;
-    const lastWatchedEpisode = ongoingAnime ? ongoingAnime.lastWatchedEpisode : (completedAnime ? completedAnime.lastWatchedEpisode : 0);
+    const ongoingAnime = userResponse.ongoingAnime
+      ? userResponse.ongoingAnime.find(anime => anime.animeId === animeId)
+      : null;
+    const completedAnime = userResponse.completedAnime
+      ? userResponse.completedAnime.find(anime => anime.animeId === animeId)
+      : null;
+    const lastWatchedEpisode = ongoingAnime
+      ? ongoingAnime.lastWatchedEpisode
+      : (completedAnime ? completedAnime.lastWatchedEpisode : 0);
 
+    // Extract recommendations
+    const relatedAnime = relatedAnimeResponse.data.data.map(rec => ({
+      id: rec.entry.mal_id,
+      title: rec.entry.title,
+      image: rec.entry.images.jpg.image_url,
+      url: rec.entry.url,
+      votes: rec.votes
+    }));
+
+    // Render anime details along with related anime
     res.render('animeDetails', {
       title: anime.title,
       anime: anime.data,
-      isInWatchlist: isInWatchlist,
-      isMarked: isMarked,
-      lastWatchedEpisode: lastWatchedEpisode
+      isInWatchlist,
+      isMarked,
+      lastWatchedEpisode,
+      relatedAnime
     });
   } catch (error) {
     console.error('Error fetching anime details:', error);
@@ -169,7 +188,8 @@ router.get('/anime/:id', authMiddleware, async (req, res) => {
       anime: null,
       isInWatchlist: false,
       isMarked: false,
-      lastWatchedEpisode: 0
+      lastWatchedEpisode: 0,
+      relatedAnime: []
     });
   }
 });

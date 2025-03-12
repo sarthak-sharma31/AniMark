@@ -76,4 +76,17 @@ router.get('/anime/:id/episodes', async (req, res) => {
   }
 });
 
+router.get('/anime/:id/related', async (req, res) => {
+  const animeId = req.params.id;
+
+  try {
+    const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}/recommendations`);
+    res.json(response.data.data);
+  } catch (error) {
+    console.error('Error fetching related anime:', error);
+    res.status(500).json({ message: 'Error fetching related anime' });
+  }
+});
+
+
 export default router;
