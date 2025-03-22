@@ -1,0 +1,14 @@
+<h3>Your Static Links</h3>
+<ul>
+  <% user.sharedLinks.forEach(link => { %>
+    <li>
+      <strong><%= link.snapshotName %>:</strong>
+      <a href="/shared/static/<%= link.id %>" target="_blank">View Link</a>
+      <% if (link.expiration) { %>
+        <p>Expires on: <%= link.expiration.toDateString() %></p>
+      <% } else { %>
+        <p>Permanent Link</p>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>

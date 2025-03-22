@@ -11,11 +11,9 @@
     <h1><%= title %></h1>
   </header>
   <main>
-    <div class="anime-cards-container">
-      <% animeList.forEach(anime => { %>
-        <%- include('partials/animeCard', { anime: anime }) %>
-      <% }) %>
-    </div>
+    <div class="anime-cards-container" id="animeCardsContainer"></div>
+    <div id="animeIds" data-ids="<%= JSON.stringify(animeIds) %>"></div>
   </main>
+  <script src="/js/lazyLoadAnime.js"></script>
 </body>
 </html>

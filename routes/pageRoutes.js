@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 const baseURL = "http://localhost:3000/api/anime";
@@ -29,7 +30,89 @@ function getRandomAnimeImage() {
   return `/images/anime-characters/${files[randomIndex]}`;
 }
 
-router.get('/share/:linkId/:listType', async (req, res) => {
+router.post('/share/static', authMiddleware, async (req, res) => {
+  const { snapshotName, expiration, listType } = req.body;
+  const userId = req.user.id; // Ensure user authentication is applied
+
+  try {
+    console.log('Incoming request:', { snapshotName, expiration, listType });
+
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log('Error: User not found!');
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    if (!user[listType]) {
+      console.log(`Error: List type "${listType}" not found for the user.`);
+      return res.status(404).json({ message: 'List not found.' });
+    }
+
+    const animeIds = user[listType];
+    console.log('Anime IDs in the list:', animeIds);
+
+    const staticLinkId = new mongoose.Types.ObjectId();
+    const expirationDate = expiration === 'permanent'
+      ? null
+      : new Date(Date.now() + expiration * 24 * 60 * 60 * 1000);
+
+    const staticLink = {
+      id: staticLinkId,
+      type: 'static',
+      listType,
+      animeIds,
+      createdAt: new Date(),
+      expiration: expirationDate,
+      snapshotName: snapshotName || `${listType} Snapshot`
+    };
+
+    console.log('Generated static link:', staticLink);
+
+    user.sharedLinks.push(staticLink);
+    console.log('Before saving user:', user);
+    await user.save();
+    console.log('User saved successfully.');
+
+    const shareLink = `/shared/static/${staticLinkId}`;
+    res.json({ shareLink });
+  } catch (error) {
+    console.error('Error occurred while creating static link:', error);
+    res.status(500).json({ message: 'Error creating static link.' });
+  }
+});
+
+router.get('/shared/static/:linkId', async (req, res) => {
+  const { linkId } = req.params;
+
+  try {
+    const user = await User.findOne({ 'sharedLinks.id': linkId });
+    if (!user) {
+      return res.status(404).json({ message: 'Link not found.' });
+    }
+
+    const staticLink = user.sharedLinks.find(link => link.id === linkId);
+    if (!staticLink) {
+      return res.status(404).json({ message: 'Static link not found.' });
+    }
+
+    if (staticLink.expiration && new Date() > staticLink.expiration) {
+      return res.status(410).json({ message: 'This link has expired.' });
+    }
+
+    // Render the page instead of returning JSON
+    res.render('sharedAnimeList', {
+      title: staticLink.snapshotName,
+      animeIds: staticLink.animeIds // Pass anime IDs for lazy loading
+    });
+  } catch (error) {
+    console.error('Error fetching static link:', error);
+    res.status(500).json({ message: 'Error fetching static link.' });
+  }
+});
+
+
+
+router.get('/share/:linkId/:listType', authMiddleware, async (req, res) => {
   const { linkId, listType } = req.params;
 
   try {
@@ -239,6 +322,7 @@ router.get('/anime/:id', authMiddleware, async (req, res) => {
 router.get('/login', (req, res) => {
   res.render('login');
 });
+
 router.get('/register', (req, res) => {
   res.render('register');
 });
