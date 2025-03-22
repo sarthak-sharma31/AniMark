@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 const baseURL = "http://localhost:3000/api/anime";
@@ -27,6 +28,47 @@ function getRandomAnimeImage() {
   const randomIndex = Math.floor(Math.random() * files.length);
   return `/images/anime-characters/${files[randomIndex]}`;
 }
+
+router.get('/share/:linkId/:listType', async (req, res) => {
+  const { linkId, listType } = req.params;
+
+  try {
+    // Find the user where the dynamicLinks contain the given linkId
+    const user = await User.findOne({
+      $or: [
+        { 'dynamicLinks.watchlist': `/share/${linkId}/watchlist` },
+        { 'dynamicLinks.markedAnime': `/share/${linkId}/markedAnime` },
+        { 'dynamicLinks.ongoingAnime': `/share/${linkId}/ongoingAnime` }
+      ]
+    });
+
+    if (!user || !user[listType]) {
+      return res.status(404).json({ message: 'List not found.' });
+    }
+
+    // Fetch details of the anime in the list
+    const animeDetails = await Promise.all(
+      user[listType].map(async (animeId) => {
+        try {
+          const response = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`);
+          return response.data.data;
+        } catch (error) {
+          console.error(`Error fetching anime ID ${animeId}:`, error);
+          return null;
+        }
+      })
+    );
+
+    res.render('sharedAnimeList', {
+      title: `${listType} - Dynamic List`,
+      animeList: animeDetails.filter(anime => anime !== null) // Exclude failed fetches
+    });
+  } catch (error) {
+    console.error('Error fetching dynamic list:', error);
+    res.status(500).json({ message: 'Error fetching dynamic list.' });
+  }
+});
+
 
 router.get('/anime/:id/episodes', async (req, res) => {
   const animeId = req.params.id;
@@ -205,22 +247,30 @@ router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const dynamicLinks = {
+      watchlist: `/share/${uuidv4()}/watchlist`,
+      markedAnime: `/share/${uuidv4()}/markedAnime`,
+      ongoingAnime: `/share/${uuidv4()}/ongoingAnime`
+    };
+
+    console.log('Generated Dynamic Links:', dynamicLinks); // Debugging
 
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      profileImage: getRandomAnimeImage() // Assign random anime image
+      dynamicLinks // Assigning dynamicLinks
     });
 
     await newUser.save();
-    dbProfileImage = newUser.profileImage; // Update global variable
-    res.redirect('/login');
+    console.log('User saved successfully:', newUser); // Debugging
+
+    res.status(201).json({ status: 201, message: 'User registered successfully', dynamicLinks });
   } catch (error) {
     console.error('Error registering user:', error);
-    res.status(500).json({ message: 'Error registering user' });
+    res.status(500).json({ status: 500, message: 'Error registering user' });
   }
 });
 

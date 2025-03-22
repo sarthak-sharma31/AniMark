@@ -12,15 +12,31 @@ const commentSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now }
 });
 
+const sharedLinkSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true }, // Unique link ID
+  type: { type: String, enum: ['dynamic', 'static'], required: true }, // Link type: dynamic or static
+  listType: { type: String, enum: ['watchlist', 'markedAnime', 'ongoingAnime'], required: true }, // List type
+  animeIds: [{ type: String }], // For static links, store snapshot anime IDs
+  createdAt: { type: Date, default: Date.now }, // Timestamp for creation
+  expiration: { type: Date }, // Optional expiration for static links
+  snapshotName: { type: String } // Optional custom name for static links
+});
+
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  profileImage: { type: String, default: 'default_image_url' }, // Add profileImage field
+  profileImage: { type: String, default: 'default_image_url' },
   watchlist: [{ type: String }],
   markedAnime: [{ type: String }],
   ongoingAnime: [ongoingAnimeSchema],
-  comments: [commentSchema]
+  comments: [commentSchema],
+  sharedLinks: [sharedLinkSchema], // Array of shared links for dynamic/static lists
+  dynamicLinks: { // Store permanent dynamic links here
+    watchlist: { type: String, default: '' }, // Auto-generated link
+    markedAnime: { type: String, default: '' },
+    ongoingAnime: { type: String, default: '' }
+  }
 });
 
 const User = mongoose.model('User', userSchema);

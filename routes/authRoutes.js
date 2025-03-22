@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import User from "../models/userModel.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
@@ -12,11 +13,28 @@ router.post('/register', async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
 
-    res.status(201).json({ status: 201, message: 'User registered successfully' });
+    const dynamicLinks = {
+      watchlist: `/share/${uuidv4()}/watchlist`,
+      markedAnime: `/share/${uuidv4()}/markedAnime`,
+      ongoingAnime: `/share/${uuidv4()}/ongoingAnime`
+    };
+
+    console.log('Generated Dynamic Links:', dynamicLinks); // Debugging
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      dynamicLinks // Assigning dynamicLinks
+    });
+
+    await newUser.save();
+    console.log('User saved successfully:', newUser); // Debugging
+
+    res.status(201).json({ status: 201, message: 'User registered successfully', dynamicLinks });
   } catch (error) {
+    console.error('Error registering user:', error);
     res.status(500).json({ status: 500, message: 'Error registering user' });
   }
 });

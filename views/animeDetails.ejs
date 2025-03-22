@@ -23,7 +23,11 @@
             <img src="<%= anime.images.jpg.image_url %>" alt="<%= anime.title_english %>" class="anime-cover">
             <div class="anime-info">
               <h1>
-                <%= anime.title_english %>
+                <% if (anime.title_english !=null) {%>
+                  <%= anime.title_english %>
+                    <%}else{%>
+                      <%= anime.title %>
+                        <%}%>
               </h1>
               <p>Rating: <%= anime.score %> (<%= anime.scored_by %> users)</p>
               <p>Genres: <%= anime.genres.map(genre=> genre.name).join(', ') %></p>
@@ -81,23 +85,26 @@
       </main>
       <div class="related-anime">
         <h2>Related Anime</h2>
-        <% if (relatedAnime.length > 0) { %>
+        <% if (relatedAnime.length> 0) { %>
           <div class="related-anime-container">
-            <% relatedAnime.forEach(anime => { %>
+            <% relatedAnime.forEach(anime=> { %>
               <div class="related-anime-card">
                 <a href="/anime/<%= anime.id %>">
-                  <img src="<%= anime.image %>" alt="<%= anime.title_english %>" class="related-anime-img">
+                  <img src="<%= anime.image %>" alt="<%= anime.title %>" class="related-anime-img">
                 </a>
                 <div class="related-anime-info">
-                  <a href="/anime/<%= anime.id %>" class="related-anime-title"><%= anime.title %></a>
-                  <p>Votes: <%= anime.votes %></p>
+                  <a href="/anime/<%= anime.id %>" class="related-anime-title">
+                    <%= anime.title %>
+                  </a>
+                  <p>Votes: <%= anime.votes %>
+                  </p>
                 </div>
               </div>
-            <% }) %>
+              <% }) %>
           </div>
-        <% } else { %>
-          <p>No related anime found.</p>
-        <% } %>
+          <% } else { %>
+            <p>No related anime found.</p>
+            <% } %>
       </div>
 
       <%- include('partials/footer') %>

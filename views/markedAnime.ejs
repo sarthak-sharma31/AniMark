@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <%- include('partials/header') %>
 
-  <main>
-    <h1>Marked Anime</h1>
-    <div class="anime-cards-container">
-      <% animeList.forEach(anime => { %>
-        <%- include('partials/animeCard', { anime: anime }) %>
-      <% }) %>
-    </div>
-    <!-- Hidden div to store anime IDs for JS -->
-    <div id="animeIds" data-ids="<%= JSON.stringify(markedAnimeIds) %>"></div>
-  </main>
+    <main>
+      <h1>Marked Anime</h1>
+      <div class="share-link">
+        <p>Share your Marked Anime List:</p>
+        <input type="text" value="<%= user.dynamicLinks.markedAnime %>" readonly>
+        <button onclick="copyLink('<%= user.dynamicLinks.markedAnime %>')">Copy Link</button>
+      </div>
+      <div class="anime-cards-container">
+        <% animeList.forEach(anime=> { %>
+          <%- include('partials/animeCard', { anime: anime }) %>
+            <% }) %>
+      </div>
+      <!-- Hidden div to store anime IDs for JS -->
+      <div id="animeIds" data-ids="<%= JSON.stringify(markedAnimeIds) %>"></div>
+    </main>
 
-  <%- include('partials/footer') %>
+    <%- include('partials/footer') %>
 
-  <script src="/js/lazyLoadAnime.js"></script>
+
+      <script>
+        function copyLink(link) {
+          navigator.clipboard.writeText(link);
+          alert('Link copied to clipboard!');
+        }
+      </script>
+      <script src="/js/lazyLoadAnime.js"></script>
 </body>
 
 </html>
