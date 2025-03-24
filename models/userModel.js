@@ -13,7 +13,7 @@ const commentSchema = new mongoose.Schema({
 });
 
 const sharedLinkSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true }, // Unique link ID
+  id: { type: String}, // Unique link ID
   type: { type: String, enum: ['dynamic', 'static'], required: true }, // Link type: dynamic or static
   listType: { type: String, enum: ['watchlist', 'markedAnime', 'ongoingAnime'], required: true }, // List type
   animeIds: [{ type: String }], // For static links, store snapshot anime IDs
@@ -31,9 +31,9 @@ const userSchema = new mongoose.Schema({
   markedAnime: [{ type: String }],
   ongoingAnime: [ongoingAnimeSchema],
   comments: [commentSchema],
-  sharedLinks: [sharedLinkSchema], // Array of shared links for dynamic/static lists
-  dynamicLinks: { // Store permanent dynamic links here
-    watchlist: { type: String, default: '' }, // Auto-generated link
+  sharedLinks: { type: [sharedLinkSchema], default: [] }, // ✅ Ensure empty array by default
+  dynamicLinks: {
+    watchlist: { type: String, default: '' },
     markedAnime: { type: String, default: '' },
     ongoingAnime: { type: String, default: '' }
   }

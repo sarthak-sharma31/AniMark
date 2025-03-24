@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import User from "../models/userModel.js";
 import { v4 as uuidv4 } from 'uuid';
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -20,8 +21,6 @@ router.post('/register', async (req, res) => {
       ongoingAnime: `/share/${uuidv4()}/ongoingAnime`
     };
 
-    console.log('Generated Dynamic Links:', dynamicLinks); // Debugging
-
     const newUser = new User({
       username,
       email,
@@ -32,7 +31,7 @@ router.post('/register', async (req, res) => {
     await newUser.save();
     console.log('User saved successfully:', newUser); // Debugging
 
-    res.status(201).json({ status: 201, message: 'User registered successfully', dynamicLinks });
+    res.redirect('/login');
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ status: 500, message: 'Error registering user' });

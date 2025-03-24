@@ -1,19 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
-  <header>
-    <h1><%= title %></h1>
-  </header>
-  <main>
-    <div class="anime-cards-container" id="animeCardsContainer"></div>
-    <div id="animeIds" data-ids="<%= JSON.stringify(animeIds) %>"></div>
-  </main>
-  <script src="/js/lazyLoadAnime.js"></script>
+
+  <%- include('partials/header') %>
+
+    <main>
+      <h1>
+        <%= title %>
+      </h1>
+      <div class="anime-cards-container" id="animeCardsContainer"></div>
+      <div id="animeIds" data-ids="<%= JSON.stringify(animeIds) %>"></div>
+    </main>
+    <%- include('partials/footer') %>
+
+
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const animeContainer = document.querySelector('.anime-cards-container');
+          const animeIdsElement = document.getElementById('animeIds');
+
+          if (!animeContainer || !animeIdsElement) return;
+
+          const animeIds = JSON.parse(animeIdsElement.dataset.ids);
+          let loadedCount = 0; // Start from the first anime
+
+          async function loadMoreAnime() {
+            if (loadedCount >= animeIds.length) return;
+
+            const animeId = animeIds[loadedCount];
+            loadedCount++;
+
+            try {
+              await delay(1000); // 1-second delay per fetch
+              const response = await fetch(`/fetchAnime?id=${animeId}`);
+              const html = await response.text();
+              animeContainer.insertAdjacentHTML('beforeend', html);
+            } catch (error) {
+              console.error("Error fetching anime:", error);
+            }
+          }
+
+          // Load 1 anime every second
+          setInterval(loadMoreAnime, 1000);
+
+          // Simple delay function
+          function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+          }
+        });
+      </script>
 </body>
+
 </html>

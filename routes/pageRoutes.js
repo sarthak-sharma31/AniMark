@@ -69,9 +69,7 @@ router.post('/share/static', authMiddleware, async (req, res) => {
     console.log('Generated static link:', staticLink);
 
     user.sharedLinks.push(staticLink);
-    console.log('Before saving user:', user);
     await user.save();
-    console.log('User saved successfully.');
 
     const shareLink = `/shared/static/${staticLinkId}`;
     res.json({ shareLink });
@@ -81,7 +79,7 @@ router.post('/share/static', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/shared/static/:linkId', async (req, res) => {
+router.get('/shared/static/:linkId', authMiddleware, async (req, res) => {
   const { linkId } = req.params;
 
   try {
@@ -109,8 +107,6 @@ router.get('/shared/static/:linkId', async (req, res) => {
     res.status(500).json({ message: 'Error fetching static link.' });
   }
 });
-
-
 
 router.get('/share/:linkId/:listType', authMiddleware, async (req, res) => {
   const { linkId, listType } = req.params;
