@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <header>
+    <h1>Manage Shared Links</h1>
+  </header>
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>List Type</th>
+          <th>Expiration</th>
+          <th>Actions</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% sharedLinks.forEach(link=> { %>
+          <tr data-id="<%= link.id %>">
+            <td>
+              <%= link.snapshotName %>
+            </td>
+            <td>
+              <%= link.type %>
+            </td>
+            <td>
+              <%= link.listType %>
+            </td>
+            <td>
+              <% if (link.expiration) { %>
+                <span class="expiration-time">
+                  <%= new Date(link.expiration).toLocaleString() %>
+                </span>
+                <% } else { %>
+                  N/A
+                  <% } %>
+            </td>
+            <td>
+              <% if (link.expiration) { %>
+                <button class="increase-expiration">+1 Day</button>
+                <button class="decrease-expiration">-1 Day</button>
+                <% } %>
+                  <button class="delete-link">Delete</button>
+            </td>
+            <td><a href="/shared/static/<%= link.id %>">View</a></td>
+
+          </tr>
+          <% }); %>
+      </tbody>
+    </table>
+  </main>
+  <script src="/js/manageLinks.js"></script>
+</body>
+
+</html>

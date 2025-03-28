@@ -383,6 +383,23 @@ router.post('/update-profile-photo', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/manage-links', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id; // Assuming you have user authentication
+    const user = await User.findById(userId).select('sharedLinks');
+
+    res.render('manageLinks', {
+      title: 'Manage Shared Links',
+      sharedLinks: user.sharedLinks
+    });
+  } catch (error) {
+    console.error('Error fetching shared links:', error);
+    res.status(500).send('Error loading manage links page');
+  }
+});
+
+
+
 router.get('/watchlist', authMiddleware, async (req, res) => {
   const userId = req.user.id;
   try {

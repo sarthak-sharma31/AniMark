@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
+import sharedLinkRoutes from "./routes/sharedLinks.js";
 import animeRoutes from "./routes/animeRoutes.js";
 import watchlistRoutes from "./routes/watchlistRoutes.js";
 import markedAnimeRoutes from "./routes/markedAnimeRoutes.js";
@@ -78,6 +79,7 @@ app.use('/api/user', profileRoutes);
 app.use('/api', commentRoutes);
 app.use('/', pageRoutes);
 app.use('/', userRoutes);
+app.use('/', sharedLinkRoutes);
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)
