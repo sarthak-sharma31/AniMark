@@ -4,9 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-    <%= title %>
-  </title>
+  <title><%= title %></title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -19,8 +17,8 @@
     <!-- Dynamic Link Section -->
     <div class="share-link">
       <p>Share your Marked Anime List:</p>
-      <input type="text" value="<%= user.dynamicLinks.markedAnime %>" readonly>
-      <button onclick="copyLink('<%= user.dynamicLinks.markedAnime %>')">Copy Link</button>
+      <input type="text" value="localhost:3000<%= user.dynamicLinks.markedAnime %>" readonly>
+      <button onclick="copyLink('localhost:3000<%= user.dynamicLinks.markedAnime %>')">Copy Link</button>
     </div>
 
     <!-- Static Link Creation Section -->
@@ -44,12 +42,8 @@
       <div id="staticLinkResult"></div>
     </div>
 
-    <!-- Anime Cards Section -->
-    <div class="anime-cards-container">
-      <% animeList.forEach(anime => { %>
-        <%- include('partials/animeCard', { anime: anime }) %>
-      <% }) %>
-    </div>
+    <!-- Anime Cards Section (Now Empty, will be filled by JS) -->
+    <div class="anime-cards-container"></div>
 
     <!-- Hidden div to store anime IDs for JS -->
     <div id="animeIds" data-ids="<%= JSON.stringify(markedAnimeIds) %>"></div>

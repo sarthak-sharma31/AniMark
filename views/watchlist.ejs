@@ -1,24 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <%- include('partials/header') %>
 
-  <main>
-    <h1>Watchlist</h1>
-    <div class="anime-cards-container">
-       <% animeList.forEach(anime => { %>
-        <%- include('partials/animeCard', { anime: anime }) %>
-      <% }) %>
-    </div>
-    <div id="animeIds" data-ids='<%= JSON.stringify(watchlistIds) %>'></div>
-  </main>
-  <%- include('partials/footer') %>
-  <script src="/js/lazyLoadAnime.js"></script>
+    <main>
+      <h1>Watchlist</h1>
+
+      <!-- Dynamic Link Section -->
+      <div class="share-link">
+        <p>Share your WatchList:</p>
+        <input type="text" value="localhost:3000<%= user.dynamicLinks.watchlist %>" readonly>
+        <button onclick="copyLink('localhost:3000<%= user.dynamicLinks.watchlist %>')">Copy Link</button>
+      </div>
+
+      <!-- Static Link Creation Section -->
+      <div class="create-static-link">
+        <h3>Create Static Link</h3>
+        <form id="createStaticLinkForm">
+          <label for="snapshotName">Snapshot Name:</label>
+          <input type="text" id="snapshotName" name="snapshotName" placeholder="E.g., My Favorites" required>
+
+          <label for="expiration">Expiration:</label>
+          <select id="expiration" name="expiration">
+            <option value="7">7 Days</option>
+            <option value="30">30 Days</option>
+            <option value="permanent">Permanent</option>
+          </select>
+
+          <button type="submit">Create Static Link</button>
+          <a href="/manage-links" class="btn">Manage Links</a>
+        </form>
+
+        <div id="staticLinkResult"></div>
+      </div>
+
+
+      <div class="anime-cards-container"></div>
+      <div id="animeIds" data-ids='<%= JSON.stringify(watchlistIds) %>'></div>
+    </main>
+    <%- include('partials/footer') %>
+
+      <script>
+        // Copy Dynamic Link Functionality
+        function copyLink(link) {
+          navigator.clipboard.writeText(link);
+          alert('Link copied to clipboard!');
+        }
+
+        // Static Link Creation Logic
+        document.getElementById('createStaticLinkForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const snapshotName = document.getElementById('snapshotName').value;
+          const expiration = document.getElementById('expiration').value;
+
+          try {
+            const response = await fetch('/share/static', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ snapshotName, expiration, listType: 'watchlist' })
+            });
+
+            const data = await response.json();
+            if (data.shareLink) {
+              document.getElementById('staticLinkResult').innerHTML = `
+          <p>Static Link Created: <a href="${data.shareLink}" target="_blank">${data.shareLink}</a></p>
+        `;
+            } else {
+              document.getElementById('staticLinkResult').textContent = 'Error creating static link.';
+            }
+          } catch (error) {
+            console.error('Error creating static link:', error);
+            document.getElementById('staticLinkResult').textContent = 'Error creating static link.';
+          }
+        });
+      </script>
+
+
+      <script src="/js/lazyLoadAnime.js"></script>
 </body>
+
 </html>

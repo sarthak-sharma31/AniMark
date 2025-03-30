@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   if (token) {
-    console.log("Token mil gya re baba ", token);
     fetch('/api/auth/me', {
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` }
@@ -26,6 +25,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   } else {
     window.location.href = '/login';
-    console.log("Nhi Mila Token :(");
   }
 });

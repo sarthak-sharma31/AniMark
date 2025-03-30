@@ -5,26 +5,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.a-card').forEach(card => {
         card.addEventListener('click', () => {
-          const animeId = card.dataset.id;
-          window.location.href = `/anime/${animeId}`;
+            const animeId = card.dataset.id;
+            console.log(`These are the Id ${animeId}`);
+            window.location.href = `/anime/${animeId}`;
         });
-      });
+    });
 
-    if (!animeContainer || !animeIdsElement) return; // Exit if not found
+    if (!animeContainer || !animeIdsElement) return; // Exit if elements are missing
 
     const animeIds = JSON.parse(animeIdsElement.dataset.ids);
-    let loadedCount = 3; // Start from the 4th anime
+    console.log(`These are the animeIds: ${animeIds}`);
+    let loadedCount = 0;
 
     async function loadMoreAnime() {
-        if (loadedCount >= animeIds.length) return; // Stop when all anime are loaded
+        if (loadedCount >= animeIds.length) {
+            clearInterval(window.lazyLoadInterval); // Stop fetching when done
+            return;
+        }
 
         const animeId = animeIds[loadedCount];
-        loadedCount++; // Move to next anime
+        loadedCount++;
 
         try {
-            await delay(1000); // 1-second delay per fetch
+            await delay(1500); // Increased delay to reduce rate limit issues
 
             const response = await fetch(`/fetchAnime?id=${animeId}`);
+            if (!response.ok) throw new Error(`Failed to load anime ${animeId}`);
+
             const html = await response.text();
             animeContainer.insertAdjacentHTML('beforeend', html);
         } catch (error) {
@@ -32,8 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Load 1 anime every second
-    setInterval(loadMoreAnime, 1000);
+    // ✅ Stop previous intervals before starting a new one
+    if (window.lazyLoadInterval) clearInterval(window.lazyLoadInterval);
+
+    // Start lazy loading and store interval reference globally
+    window.lazyLoadInterval = setInterval(loadMoreAnime, 1500); // Slower rate to prevent 429 errors
 });
 
 // Simple delay function
